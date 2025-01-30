@@ -1,20 +1,11 @@
-
-
 import React from 'react';
 import './JobCard.scss';
 import { Bookmark, Users } from 'lucide-react';
 import Image from 'next/image';
 import { HiOutlineLocationMarker } from "react-icons/hi";
+import { JobCardProps } from '@/app/utils/joblist/job';
 
-interface JobCardProps {
-  title: string;
-  type: 'FULL-TIME' | 'PART-TIME';
-  salary: string;
-  company: string;
-  location: string;
-  applicants: number;
-  logo: string;
-}
+
 
 const JobCard: React.FC<JobCardProps> = ({
   title,
