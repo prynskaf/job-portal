@@ -18,13 +18,13 @@ body {
 }
 
 
-.home-wrapper{
+/* .home-wrapper{
   padding: 1rem;
 
   
   @media (min-width: 1024px) {
-    padding: 1rem 1.5rem;
-    max-width: 80rem;
+    padding: 1rem 1.5rem; 
+     max-width: 80rem;
     margin: 0 auto;
   }
-}
+} */

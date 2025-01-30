@@ -14,7 +14,7 @@ const Header = () => {
             <p>Thousands of jobs in all the leading sector are waiting for you.</p>
          
         </div>
-        <div className="header__image">
+        <div className="header__image ">
             <Image src="/header/headerSvg.svg" alt="headerSvg" width={500} height={500} objectFit='cover' />
         </div>
         </div>

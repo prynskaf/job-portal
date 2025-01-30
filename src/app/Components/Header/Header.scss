@@ -1,137 +1,92 @@
-// .header__container {
-//     background: linear-gradient(101.41deg, rgba(197, 153, 229, 0.36) -33.13%, rgba(197, 153, 229, 0) 48.49%, rgba(226, 204, 242, 0.48) 125.81%);
-//     width: 100%;
-//     .header__wrapper{
-//         padding: 1rem;
-
-//         @media (min-width: 1024px) {
-//           padding: 1rem 1.5rem;
-//           max-width: 80rem;
-//           margin: 0 auto;
-
-          
-//         }
-//     }
-
-
-//     .header__content {
-//         display: flex;
-//         justify-content: space-between;
-//         align-items: center;
-//         padding:  1rem 0;
-//         gap: 2rem;
-        
-
-//         .header__description {
-//             h1{
-//                 font-size: 1.2rem;
-//                 font-weight: 500;
-//                 color: #303030;
-//                 margin-bottom: 0.5rem;
-
-//                 @media (min-width: 1024px) {
-//                     font-size: 3.5rem;
-//                     font-weight: boder;
-//                 }
-//             }
-
-//             p{
-//                 font-size: .9rem;
-//                 color: #5E6670;
-
-//                 @media (min-width: 1024px) {
-//                     font-size: 1.2rem;
-//                 }
-              
-//             }
-//         }
-
-//         .header__image {
-//             padding: 10px;
-//             img{
-//                 object-fit: cover;
-//                 // width: 100%;
-//             height: auto;
-
-//                 @media (min-width: 1024px) {
-//                     max-width: 350px;
-//                     height: auto;
-//                 }
-//             }
-//         }
-
-//     }
-
-
-
-
-
-
-// }
-
-
 .header__container {
-    background: linear-gradient(101.41deg, rgba(197, 153, 229, 0.36) -33.13%, rgba(197, 153, 229, 0) 48.49%, rgba(226, 204, 242, 0.48) 125.81%);
-    width: 100%;
+  background: linear-gradient(
+    101.41deg,
+    rgba(197, 153, 229, 0.36) -33.13%,
+    rgba(197, 153, 229, 0) 48.49%,
+    rgba(226, 204, 242, 0.48) 125.81%
+  );
+  width: 100%;
+  height: 100%;
 
-    .header__wrapper {
-        padding: 1rem;
+  @media (min-width: 1024px) {
+    height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .header__wrapper {
+    padding: 2rem;
+
+    @media (min-width: 1024px) {
+      max-width: 80rem;
+    }
+  }
+
+  .header__content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    gap: 2rem;
+
+    @media (max-width: 1023px) {
+      justify-content: center;
+      flex-direction: column; 
+      text-align: center;
+    }
+
+    .header__description {
+      flex: 1; 
+
+      h1 {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #303030;
+        margin-bottom: 0.5rem;
 
         @media (min-width: 1024px) {
-            padding: 1rem 1.5rem;
-            max-width: 80rem;
-            margin: 0 auto;
+          font-size: 3rem;
+          font-weight: 600; 
         }
+      }
+
+      p {
+        font-size: 0.9rem;
+        color: #5e6670;
+
+        @media (min-width: 1024px) {
+          font-size: 1.2rem;
+        }
+      }
     }
 
-    .header__content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem 0;
-        gap: 2rem;
+    .header__image {
+  
+      img {
+        // object-fit: cover;
+        width: 150px;
+        // height: auto;
+    
 
-        @media (max-width: 1023px) {
-            justify-content: center;
-            flex-direction: column; // Stack items in a column for smaller screens
-            text-align: center;
+        // display: none;
+
+        @media (min-width: 1024px) {
+          object-fit: cover;
+          height: auto;
+          width: 100%;
         }
-
-        .header__description {
-            flex: 1; // Allows description to take available space
-
-            h1 {
-                font-size: 2rem;
-                font-weight: 600;
-                color: #303030;
-                margin-bottom: 0.5rem;
-
-                @media (min-width: 1024px) {
-                    font-size: 3rem;
-                    font-weight: 600; // Stronger weight for larger screens
-                }
-            }
-
-            p {
-                font-size: .9rem;
-                color: #5E6670;
-
-                @media (min-width: 1024px) {
-                    font-size: 1.2rem;
-                }
-            }
-        }
-
-        .header__image {
-            img {
-                object-fit: cover;
-                width: 100%;
-                height: auto;
-
-                @media (min-width: 1024px) {
-                    height: auto;
-                }
-            }
-        }
+      }
     }
+  }
+
+
+
+  .find__job {
+    margin-bottom: 2rem;
+    @media (min-width: 1024px) {
+      margin-bottom: 4rem;
+    }
+  }
+
 }
