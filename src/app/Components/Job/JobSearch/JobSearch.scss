@@ -1,50 +1,69 @@
 .jobs__page {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+
+  @media (min-width: 1024px) {
+    // margin: 0 auto;
+  }
+
+  .jobs__wrapper {
+    padding: 2rem;
     margin: 0 auto;
 
     @media (min-width: 1024px) {
-        // margin: 0 auto;
+      max-width: 80rem;
+      margin-top: 2rem;
     }
 
-    .jobs__wrapper {
-        padding: 2rem;
-        margin: 0 auto;
+    h1 {
+      text-align: left;
+      font-size: 2rem;
+      font-weight: 600;
+      color: #303030;
 
-        @media (min-width: 1024px) {
-            max-width: 80rem;
-            margin-top: 2rem;
-        }
+      @media (min-width: 1024px) {
+        font-size: 3rem;
+        font-weight: 600;
+      }
+    }
+    p {
+      text-align: left;
+      font-size: 0.9rem;
+      color: #5e6670;
 
-        h1 {
-            text-align: left;
-            font-size: 2rem;
-            font-weight: 600;
-            color: #303030;
-
-            @media (min-width: 1024px) {
-                font-size: 3rem;
-                font-weight: 600;
-            }
-        }
-        p{
-            text-align: left;
-            font-size: 0.9rem;
-            color: #5e6670;
-
-            @media (min-width: 1024px) {
-                font-size: 1.2rem;
-            }
-        }
-
-        .jobs___search{
-            margin-top: 2rem;
-            // border: 1px solid #e0e0e0;
-            @media (min-width: 1024px) {
-                margin-bottom: 4rem;
-            }
-        }
+      @media (min-width: 1024px) {
+        font-size: 1.2rem;
+      }
     }
 
+    .jobs___search {
+      margin-top: 2rem;
+      // border: 1px solid #e0e0e0;
+      @media (min-width: 1024px) {
+        margin-bottom: 4rem;
+      }
+    }
 
+    .Filter__wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+      @media (min-width: 1024px) {
+        // margin-bottom: 4rem;
+      }
+
+      .LeftSidebar {
+        margin-right: 2rem;
+      }
+
+
+      .RightSection {
+        display: flex;
+        flex: 1;
+        // justify-content: flex-end;
+        align-items: center;
+      }
+    }
   }
+}

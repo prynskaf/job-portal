@@ -1,6 +1,8 @@
 import React from 'react'
 import FindJobInput from '../FindJobInput/FindJobInput'
 import "./JobSearch.scss"
+import Filter from '../Filter/Filter'
+import JobListings from '../JobListings/JobListings'
 
 const JobSearch = () => {
   return (
@@ -12,6 +14,18 @@ const JobSearch = () => {
        <div className='jobs___search'>
          <FindJobInput/>
        </div>
+
+
+         <div className="Filter__wrapper">
+         <div className="LeftSidebar">
+        <Filter/>
+       </div>
+
+       <div className='RightSection '>
+        <JobListings/>
+       </div>
+         </div>
+       
     </div>
     </div>
   )

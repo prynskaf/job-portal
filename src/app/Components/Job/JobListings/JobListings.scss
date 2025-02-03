@@ -1,0 +1,29 @@
+.joblistings {
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+
+  .joblistings__wrapper {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+    gap: 1rem;
+  }
+
+  .job__card {
+    width: 100%;
+  }
+
+  .viewAll {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #6b46c1;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      color: #6300b3;
+    }
+  }
+}
