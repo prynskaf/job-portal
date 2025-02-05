@@ -37,12 +37,12 @@ button {
   margin-bottom: 2rem;
 
   &.visible {
-    display: block; // Show when `visible` class is applied
+    display: block; 
     opacity: 1;
   }
 
   &.hidden {
-    display: none; // Hide when `hidden` class is applied
+    display: none; 
     opacity: 0;
   }
 
@@ -114,7 +114,6 @@ button {
         }
 
         [type="checkbox"] {
-           /* Hide default checkbox */
       appearance: none;
       width: 18px;
       height: 18px;
@@ -123,8 +122,6 @@ button {
       outline: none;
       cursor: pointer;
       transition: all 0.2s ease;
-
-      /* Background for unchecked state */
       background-color: #fff;
 
 
@@ -135,8 +132,6 @@ button {
       &:checked {
         background-color: #6b46c1;
         border-color: #6b46c1;
-
-        /* Add a checkmark (using ::after) */
         position: relative;
 
         &::after {

@@ -1,0 +1,101 @@
+.job-application-container {
+    max-width: 80rem;
+    margin: 2rem auto;
+    padding: 2rem;
+  }
+  
+  .form-header {
+    background-color: #EFE2F8;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  
+    h1 {
+      margin-bottom: 0.5rem;
+      color: #333;
+      font-size: 1.7rem;
+      font-weight: 600;
+    }
+  
+    p {
+        margin: 0 auto;
+      color: #6300B3;
+      font-size: 1.2rem;
+      padding: 1rem;
+      font-weight: 500;
+      background-color: #dbbff0;
+     max-width: 500px;
+        border-radius: 12px;
+    }
+  }
+  
+  .application-form {
+    background-color: white;
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+  
+    input, textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+  
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+  }
+  
+  .file-upload {
+    display: flex;
+    align-items: center;
+    border: 1px dashed #ddd;
+    padding: 0.75rem;
+    border-radius: 6px;
+  
+    button {
+      background-color: #f0f0f0;
+      border: 1px solid #000;
+        border-radius: 6px;
+      padding: 0.5rem;
+      margin-right: 1rem;
+    }
+  
+    span {
+      color: #888;
+    }
+  }
+  
+  .submit-button {
+    width: 100%;
+    padding: 0.5rem 1.5rem;
+    background-color: #6b46c1;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.125rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+  
+    &:hover {
+    //   background-color: darken(#6300B3, 10%);
+    background-color: #6300B3;
+    }
+
+    @media (min-width: 1024px) {
+       width: 20%;
+      }
+  }

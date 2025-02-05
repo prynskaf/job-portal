@@ -4,6 +4,7 @@ import { Bookmark, Users } from 'lucide-react';
 import Image from 'next/image';
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { JobCardProps } from '@/app/utils/joblist/job';
+import Link from 'next/link';
 
 
 
@@ -50,8 +51,8 @@ const JobCard: React.FC<JobCardProps> = ({
       </div>
 
       <div className="grid fourth-grid actions">
-        <button className="viewDetails">View details</button>
-        <button className="applyNow">Apply now</button>
+        <button className="viewDetails"><Link href="jobs/viewDetails">View details</Link></button>
+        <button className="applyNow"><Link href="jobs/apply">Apply now</Link></button>
       </div>
     </div>
   );
