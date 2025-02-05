@@ -1,0 +1,22 @@
+select {
+  width: 100%;
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #000;
+  font-size: 16px;
+  font-weight: 400;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s;
+}
+
+option {
+  font-size: 16px;
+}
+
+// select option: {
+//     background-color: #6b46c1;
+//     color: #fff;
+//   }

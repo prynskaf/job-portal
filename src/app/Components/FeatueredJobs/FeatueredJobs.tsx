@@ -20,7 +20,7 @@ const FeatueredJobs = () => {
 
 
         <div className='featured__list'>
-            {jobs.map((job, index) => (
+            {jobs.slice(0,3).map((job, index) => (
               <div className="job__card" key={index}>
               <JobCard {...job} />
               </div>

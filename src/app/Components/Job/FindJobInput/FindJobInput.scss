@@ -3,7 +3,7 @@
     margin: 0 auto;
 
     .find__job__input {
-        background: white;
+        background-color: #F7F7F7;
         padding: 1rem;
         border-radius: 0.5rem;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.10);
@@ -38,6 +38,7 @@
                 width: 100%;
                 font-size: 0.95rem;
                 color: #374151;
+                background-color: #F7F7F7;
 
                 &::placeholder {
                     color: #9ca3af !important;
@@ -46,10 +47,10 @@
         }
 
         .hide__on__mobile {
-            display: none; // Hide on smaller screens
+            display: none; 
 
             @media (min-width: 1024px) {
-                display: flex; // Show on larger screens
+                display: flex; 
             }
         }
 
@@ -72,7 +73,7 @@
 
     p {
         color: #474C54;
-        font-size: 14px;
+        font-size: 18px;
         font-weight: 500;
 
         span {
