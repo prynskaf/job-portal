@@ -1,9 +1,16 @@
 import React from 'react'
+import AboutHeader from '../Components/AboutUs/AboutHeader/AboutHeader'
+import Insight from '../Components/AboutUs/Insight/Insight'
+import OurTeam from '../Components/AboutUs/OurTeam/OurTeam'
+import OurMission from '../Components/AboutUs/OurMission/OurMission'
 
 const AboutPage = () => {
   return (
     <div>
-      about
+     <AboutHeader />
+     <OurMission />
+     <Insight/>
+     <OurTeam />
     </div>
   )
 }

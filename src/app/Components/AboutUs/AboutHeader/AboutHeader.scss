@@ -1,0 +1,81 @@
+.AboutHeader {
+  width: 100%;
+  background-color: #efe2f8;
+
+
+  .AboutHeader___wrapper {
+    padding: 2rem;
+    margin: 0 auto;
+
+    @media (min-width: 1024px) {
+      max-width: 80rem;
+      padding: 4rem 2rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .metrics {
+        h1{
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #303030;
+            margin-bottom: 1rem;
+            @media (min-width: 1024px) {
+                font-size: 1.5rem;
+                font-weight: 500; 
+                text-align: left;
+            }
+        }
+
+       .metrics_cards {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+
+            @media (min-width: 1024px) {
+                flex-direction: row;
+            }
+
+
+            .active-users, .Partner-Companies, .Successful-Placements {
+                background-color: #fff;
+                padding: 1rem;
+                border-radius: 12px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                transition: background-color 0.2s ease;
+
+                @media (min-width: 1024px) {
+                    width: 250px;
+                    white-space: nowrap;
+                    padding: 2rem;
+                }
+
+                p {
+                    font-size: 1.5rem;
+                    font-weight: 500;
+                    color: #6300B3;
+                    font-weight: 600;
+                }
+
+                h2 {
+                    font-size: 1rem;
+                    font-weight: 600;
+                    color: #1F2937;
+                }
+            }
+       }
+
+
+    }
+
+
+
+
+
+
+
+
+
+  }
+}
