@@ -2,6 +2,8 @@
 import React from "react";
 import CountUp from "react-countup";
 import "./AboutHeader.scss";
+import ChartLine from "../Charts/Graph/ChartLine";
+
 
 const AboutHeader = () => {
     return (
@@ -33,7 +35,9 @@ const AboutHeader = () => {
                 </div>
 
                 {/* Graph */}
-                <div>graph component</div>
+                <div className="chart">
+                    <ChartLine/>
+                </div>
             </div>
         </div>
     );

@@ -1,0 +1,54 @@
+.Insight {
+    background-color: #EFE2F8;
+    width: 100%;
+
+
+    .Insight__wrapper {
+        max-width: 80rem;
+       margin: 0 auto;
+       padding: 2rem;
+  
+      @media (min-width: 1024px) {
+        padding: 4rem 1rem;
+      }
+
+      .insight-header {
+        text-align: center;
+        max-width: 700px;
+        margin: 0 auto;
+
+        
+      .badge {
+        display: inline-block;
+        background: #e9d5ff;
+        color: #6300B3;
+        padding: 6px 12px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border-radius: 9999px;
+      }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-top: 0.5rem;
+          }
+      
+          p {
+            font-size: 1rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+          }
+      }
+
+      .market-card-listings {
+        margin-top: 3rem;
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+      }
+
+    }
+}
