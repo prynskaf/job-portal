@@ -1,12 +1,13 @@
 import React from 'react'
 import ContactForms from '../Components/ContactUs/ContactForms/ContactForms'
-import Raq from '../Components/ContactUs/Raq/Raq'
+import Faq from '../Components/ContactUs/Faq/Faq'
+
 
 const ContactPage = () => {
   return (
     <div>
       <ContactForms/>
-      <Raq/>
+      <Faq/>
     </div>
   )
 }
