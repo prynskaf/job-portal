@@ -1,0 +1,58 @@
+.SavedJobs {
+  width: 100%;
+  margin: 0 auto;
+
+  .SavedJobs__wrapper {
+    padding: 3rem 2rem;
+    margin: 0 auto;
+
+    @media (min-width: 1024px) {
+      max-width: 80rem;
+      padding: 4rem 1rem;
+    }
+
+    .saved-jobs-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-align: center;
+      @media (min-width: 1024px) {
+        text-align: left;
+      }
+    }
+
+    .saved-jobs-description {
+      color: #6b7280;
+      margin-bottom: 16px;
+      text-align: center;
+
+      @media (min-width: 1024px) {
+        text-align: left;
+      }
+    }
+
+    .saved-jobs-list {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+
+    .job__card {
+      width: 100%;
+    }
+
+    .viewAll {
+      text-align: center;
+      font-size: 1.2rem;
+      color: #6b46c1;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        color: #6300b3;
+      }
+    }
+  }
+}

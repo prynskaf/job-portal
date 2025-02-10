@@ -22,23 +22,18 @@ const Footer = () => {
         <h3>Quick Link</h3>
         <Link href="/about">About</Link>
         <Link href="/contact">Contact</Link>
-        <Link href="/admin">Admin</Link>
       </div>
 
       <div className="footer-column">
         <h3>Candidate</h3>
         <Link href="/jobs">Browse Jobs</Link>
-        <Link href="/employers">Browse Employers</Link>
-        <Link href="/dashboard">Candidate Dashboard</Link>
         <Link href="/saved-jobs">Saved Jobs</Link>
       </div>
 
       <div className="footer-column">
         <h3>Employers</h3>
-        <Link href="/post-job">Post a Job</Link>
-        <Link href="/browse-candidates">Browse Candidates</Link>
-        <Link href="/employer-dashboard">Employers Dashboard</Link>
-        <Link href="/applications">Applications</Link>
+        <Link href="/profile">Profile</Link>
+        <Link href="/appliedJobs">Applications</Link>
       </div>
 
       <div className="footer-bottom">

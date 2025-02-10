@@ -2,12 +2,16 @@ import React from 'react';
 import './ViewDetails.scss';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Bookmark } from 'lucide-react';
 
 const ViewDetails = () => {
   return (
     <div className="view-details">
       <div className="job-header">
         <div className="apply-section">
+        <div className="bookmarkwrapper">
+        <Bookmark className="bookmark" />
+        </div>
           <h2>Apply</h2>
           <p>Apply for your desired job matching your skills</p>
         </div>

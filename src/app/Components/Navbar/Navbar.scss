@@ -46,7 +46,7 @@
   &__menu {
     position: fixed;
     top: 0;
-    right: -16rem; // Start off-screen
+    right: -16rem; 
     height: 100%;
     width: 16rem;
     border-top-left-radius: 24px;
@@ -57,7 +57,7 @@
     z-index: 50;
 
     &--open {
-      transform: translateX(-16rem); // Slide in from right
+      transform: translateX(-16rem); 
     }
   }
 

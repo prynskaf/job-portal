@@ -1,0 +1,106 @@
+.ProfileHeader {
+ width: 100%;
+  margin: 0 auto;
+
+  .ProfileHeader__wrapper {
+      padding: 2rem 2rem;
+      margin: 0 auto;
+  
+      @media (min-width: 1024px) {
+        max-width: 80rem;
+        padding: 3rem 1rem;
+      }
+  }
+
+  .header-container{
+    background-color: #f9f0ff;
+    border-radius: 12px;
+   
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    @media (min-width: 1024px) {
+        flex-direction: row;
+        justify-content: space-between;
+        text-align: left;
+        padding: 2rem;
+  
+      }
+
+  }
+
+  .profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    @media (min-width: 1024px) {
+      flex-direction: row;
+      align-items: center;
+    }
+
+    &__avatar {
+
+      border-radius: 50%;
+      margin-bottom: 1rem;
+
+      @media (min-width: 1024px) {
+        margin-right: 1rem;
+        margin-bottom: 0;
+      }
+    }
+
+     .profile-info__details {
+      .profile-info__name{
+     font-size: 2rem;
+        font-weight: 600;
+      }
+
+      .profile-info__email,
+      .profile-info__phone {
+        font-size: 1rem;
+        font-style: italic;
+        font-weight: 500;
+        color: #6c757d;
+        margin: 0;
+      }
+    }
+  }
+
+  .job-stats {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+
+    @media (min-width: 1024px) {
+      margin-top: 0;
+    }
+
+    &__item {
+      background-color: #F1E0FF;
+      border: 1px solid #efe2f8;
+      padding: 1rem 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+
+
+      p {
+        font-size: 1rem;
+        color: #6300B3;
+        font-weight: 500;
+        margin: 0;
+        white-space: nowrap;
+      }
+
+      h3 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-top: 0.5rem;
+        color: #6f42c1;
+      }
+    }
+  }
+}

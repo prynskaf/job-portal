@@ -15,7 +15,7 @@ const JobListings = () => {
             ))}
           </div>
           <div className="viewAll">
-            <Link href="#" className='viewAll'>View all</Link>
+            <Link href="#" className='viewAll'>View More</Link>
             </div>
       </div>
       

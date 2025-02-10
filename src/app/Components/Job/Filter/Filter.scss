@@ -1,51 +1,48 @@
-
-.onMobileFile{
-display: flex ;
-margin-bottom: 1.2rem;
-
-button {
+.onMobileFile {
   display: flex;
-  padding: 0.5rem 1rem;
-  background-color: #6b46c1;
-  border: none;
-  color: #fff;
-  font-size: 1rem;
-  border-radius: 0.25rem;
-  transition: background-color 0.2s ease;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  gap: 0.5rem;
-  align-items: center;
+  margin-bottom: 1.2rem;
 
-  &:hover {
-    background-color: #6300B3;
+  button {
+    display: flex;
+    padding: 0.5rem 1rem;
+    background-color: #6b46c1;
+    color: #fff;
+    font-size: 1rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s ease;
+    border: 1px solid #efe2f8;
+    gap: 0.5rem;
+    align-items: center;
+
+    &:hover {
+      background-color: #6300b3;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    display: none;
   }
 }
 
-@media (min-width: 1024px) {
-  display: none;
-}
-}
-
 .filter-container {
-  background-color: #F7F7F7;
+  background-color: #f7f7f7;
   padding: 1rem;
   max-width: 100%;
   border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #efe2f8;
   display: none;
   transition: opacity 0.3s ease-in-out;
   margin-bottom: 2rem;
 
   &.visible {
-    display: block; 
+    display: block;
     opacity: 1;
   }
 
   &.hidden {
-    display: none; 
+    display: none;
     opacity: 0;
   }
-
 
   @media (min-width: 1024px) {
     max-width: 250px;
@@ -53,25 +50,23 @@ button {
     margin-bottom: 0;
 
     &.visible {
-      display: block; 
+      display: block;
       opacity: 1;
     }
-  
+
     &.hidden {
       display: block;
       opacity: 1;
     }
   }
 
-
   .filter-group {
     margin-bottom: 1rem;
-    
+
     .salary-range-title {
       color: #303030;
       margin-bottom: 0.5rem;
     }
-
 
     .filter-header {
       font-weight: 600;
@@ -108,45 +103,43 @@ button {
         input {
           margin-right: 0.5rem;
 
-          &:checked  {
-          color: #6b46c1;
+          &:checked {
+            color: #6b46c1;
           }
         }
 
         [type="checkbox"] {
-      appearance: none;
-      width: 18px;
-      height: 18px;
-      border: 2px solid #ccc;
-      border-radius: 4px;
-      outline: none;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      background-color: #fff;
+          appearance: none;
+          width: 18px;
+          height: 18px;
+          border: 2px solid #ccc;
+          border-radius: 4px;
+          outline: none;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          background-color: #fff;
 
+          &:hover {
+            border-color: #6b46c1;
+          }
 
-      &:hover {
-        border-color: #6b46c1;
-      }
+          &:checked {
+            background-color: #6b46c1;
+            border-color: #6b46c1;
+            position: relative;
 
-      &:checked {
-        background-color: #6b46c1;
-        border-color: #6b46c1;
-        position: relative;
-
-        &::after {
-          content: '';
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          width: 6px;
-          height: 10px;
-          border: solid white;
-          border-width: 0 2px 2px 0;
-          transform: translate(-50%, -50%) rotate(45deg);
-        }
-      }
-
+            &::after {
+              content: "";
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              width: 6px;
+              height: 10px;
+              border: solid white;
+              border-width: 0 2px 2px 0;
+              transform: translate(-50%, -50%) rotate(45deg);
+            }
+          }
         }
 
         .count {
@@ -172,7 +165,7 @@ button {
 
   .expand-all {
     margin-top: 1rem;
-    color: #6300B3;
+    color: #6300b3;
     background: none;
     border: none;
     cursor: pointer;

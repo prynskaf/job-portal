@@ -1,0 +1,82 @@
+.AppliedJobs {
+    width: 100%;
+    margin: 0 auto;
+
+    .AppliedJobs__wrapper {
+        padding: 2rem 2rem;
+        margin: 0 auto;
+    
+        @media (min-width: 1024px) {
+          max-width: 80rem;
+          padding: 3rem 1rem;
+        }
+
+        .applied-jobs-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-align: center;
+
+            @media (min-width: 1024px) {
+               text-align: left;
+            }
+        }
+
+        .applied-jobs-description {
+            color: #6B7280;
+            margin-bottom: 16px;
+            text-align: center;
+
+            @media (min-width: 1024px) {
+               text-align: left;
+            }
+        }
+
+        .applied-jobs-table {
+            width: 100%;
+            border-collapse: collapse;
+
+            @media (max-width: 768px) {
+                display: block;
+                overflow-x: scroll;
+                -webkit-overflow-scrolling: touch;
+                width: 100%;
+            }
+
+            th, td {
+                border: 1px solid #E5E7EB;
+                padding: 12px;
+                text-align: left;
+                min-width: 150px;
+            }
+
+            th {
+                background-color: #F9FAFB;
+                color: #111827;
+                font-weight: 600;
+            }
+
+            .status {
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 12px;
+                font-weight: 500;
+
+                &--pending {
+                    background-color: #FEF3C7;
+                    color: #D97706;
+                }
+
+                &--accepted {
+                    background-color: #D1FAE5;
+                    color: #047857;
+                }
+
+                &--rejected {
+                    background-color: #FEE2E2;
+                    color: #B91C1C;
+                }
+            }
+        }
+    }
+}
