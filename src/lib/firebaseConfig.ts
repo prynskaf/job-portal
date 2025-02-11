@@ -2,17 +2,17 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
-
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCHJB84j82mAzH7HH9VMz4M-MYaIeWY6T4",
-  authDomain: "job-portal-e0d6b.firebaseapp.com",
-  projectId: "job-portal-e0d6b",
-  storageBucket: "job-portal-e0d6b.firebasestorage.app",
-  messagingSenderId: "276629624684",
-  appId: "1:276629624684:web:7c1434dd4b3cf075d04549",
-  measurementId: "G-E6JJHKZ3QH"
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
+  measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const analytics = getAnalytics(app);
