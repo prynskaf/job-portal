@@ -1,22 +1,31 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import "./Navbar.scss";
 import { usePathname } from "next/navigation";
 import { useClickAway } from 'react-use';
+import { auth, logout } from "@/lib/firebaseAuth";
+import { onAuthStateChanged, User } from "firebase/auth";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const pathname = usePathname();
-  const menuRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null)
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  
   useClickAway(menuRef, () => {
     if (isOpen) {
       setIsOpen(false);
@@ -26,7 +35,6 @@ const Navbar = () => {
   const isActive = (path: string) => {
     // Match exact or start-with logic for dynamic routes
     return pathname === path || pathname.startsWith(`${path}/`);
-
   };
 
   return (
@@ -77,9 +85,28 @@ const Navbar = () => {
           <Link href="/contact" className="navbar__contact">
             Contact Us
           </Link>
-          <Link href="/login" className="navbar__login">
-            Login
+          {!user ? (
+            <>
+              <Link href="/login" className="navbar__login">Login</Link>
+              <Link href="/signup" className="navbar__signup">Signup</Link>
+            </>
+          ) : (
+            <button  className="navbar__logout">Logout</button>
+          )}
+          {user && (
+           <div className="profile">
+          <Link href='/profile'>
+          <Image
+             width={100}
+             height={100}
+             src="/profilePic/profilePic.svg"
+             alt="Profile Picture"
+             className="profile__image"
+           
+           />
           </Link>
+         </div>
+         )}
         </div>
       </div>
 
@@ -121,9 +148,29 @@ const Navbar = () => {
           <Link href="/contact" className="navbar__contact">
             Contact Us
           </Link>
-          <Link href="/login" className="navbar__login">
-            Login
+          {!user ? (
+            <>
+              <Link href="/login" className="navbar__login">Login</Link>
+              <Link href="/signup" className="navbar__signup">Signup</Link>
+            </>
+          ) : (
+            <button onClick={logout} className="navbar__logout">Logout</button>
+          )}
+
+            {/* user profile */}
+          {user && (
+           <div className="profile">
+          <Link href='/profile'>
+          <Image
+             width={100}
+             height={100}
+             src="/profilePic/profilePic.svg"
+             alt="Profile Picture"
+             className="profile__image"
+           />
           </Link>
+         </div>
+         )}
         </div>
       </div>
     </nav>

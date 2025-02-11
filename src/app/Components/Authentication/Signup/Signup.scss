@@ -1,0 +1,147 @@
+.signup {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    margin-top:2rem;
+  
+    .signup__wrapper {
+      width: 100%;
+      max-width: 40rem;
+      background: #fff;
+      border-radius: 12px;
+      padding: 2rem;
+      border: 1px solid #efe2f8;
+    }
+  
+    h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+  
+    p {
+      font-size: 1rem;
+      color: #666;
+      margin-bottom: 1.5rem;
+    }
+  
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+  
+      label {
+        font-weight: 500;
+        span {
+          color: red;
+        }
+      }
+  
+      input {
+        width: 100%;
+        padding: 0.8rem;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+      }
+  
+      .input-note {
+        font-size: 0.9rem;
+        color: #777;
+      }
+  
+      .signup__options {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        
+        input {
+          margin-top: 0;
+        }
+  
+        .whatsapp {
+          color: green;
+        }
+      }
+  
+      .terms {
+        font-size: 0.9rem;
+        a {
+          color: #007bff;
+          text-decoration: none;
+        }
+      }
+  
+      .signup__button {
+        background-color: #6b46c1;
+        color: white;
+        font-size: 1rem;
+        padding: 0.8rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+
+        
+    &:hover {
+        background-color: #6300B3;
+        color: white !important;
+      }
+      }
+    }
+  
+    .signup__social {
+      text-align: center;
+      margin-top: 1rem;
+  
+      .divider {
+        position: relative;
+        text-align: center;
+        margin: 1rem 0;
+        span {
+          background: white;
+          padding: 0 10px;
+        }
+  
+        &:before,
+        &:after {
+          content: "";
+          position: absolute;
+          width: 40%;
+          height: 1px;
+          background: #ddd;
+          top: 50%;
+        }
+  
+        &:before {
+          left: 0;
+        }
+  
+        &:after {
+          right: 0;
+        }
+      }
+  
+      .social-icons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+  
+        button {
+            border: none;
+      background: none;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 6px;
+      transition: background 0.3s;
+          font-size: 1.5rem;
+
+          &:hover {
+            background: rgba(0, 0, 0, 0.05);
+          }
+        }
+      }
+    }
+  }
+  
