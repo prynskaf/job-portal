@@ -12,7 +12,7 @@ const ProfileHeader = () => {
                  <div className='header-container'>
                 <div className="profile-info">
                     <Image
-                        src="/proficePic/proficePic.svg"
+                        src="/profilePic/profilePic.svg"
                         alt="Profile"
                         className="profile-info__avatar"
                         width={100}
