@@ -43,10 +43,10 @@ const Signup = () => {
       return;
     }
     setError('');
-    const user = await signUpWithEmail(email, password);
+    const user = await signUpWithEmail(email, password, fullName, mobileNumber);
     if (user) {
       console.log('User signed up:', user);
-      router.push('/login');
+      router.push('/');
     }
   };
 
