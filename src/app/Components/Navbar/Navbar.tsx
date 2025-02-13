@@ -91,7 +91,7 @@ const Navbar = () => {
               <Link href="/signup" className="navbar__signup">Signup</Link>
             </>
           ) : (
-            <button  className="navbar__logout">Logout</button>
+            <button  onClick={logout} className="navbar__logout">Logout</button>
           )}
           {user && (
            <div className="profile">
