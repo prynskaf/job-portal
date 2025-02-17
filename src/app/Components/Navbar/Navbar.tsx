@@ -8,16 +8,28 @@ import { usePathname } from "next/navigation";
 import { useClickAway } from 'react-use';
 import { auth, logout } from "@/lib/firebaseAuth";
 import { onAuthStateChanged, User } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebaseConfig";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const pathname = usePathname();
-  const menuRef = useRef<HTMLDivElement>(null)
+  const menuRef = useRef<HTMLDivElement>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [profilePic, setProfilePic] = useState<string>('/public/profilePic/profilePic.png'); // Default profile picture
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+      if (currentUser) {
+        const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+        if (userDoc.exists()) {
+          const data = userDoc.data();
+          if (data.profilePic) {
+            setProfilePic(data.profilePic);
+          }
+        }
+      }
     });
     return () => unsubscribe();
   }, []);
@@ -91,22 +103,22 @@ const Navbar = () => {
               <Link href="/signup" className="navbar__signup">Signup</Link>
             </>
           ) : (
-            <button  onClick={logout} className="navbar__logout">Logout</button>
+            <button onClick={logout} className="navbar__logout">Logout</button>
           )}
           {user && (
-           <div className="profile">
-          <Link href='/profile'>
-          <Image
-             width={100}
-             height={100}
-             src="/profilePic/profilePic.svg"
-             alt="Profile Picture"
-             className="profile__image"
-           
-           />
-          </Link>
-         </div>
-         )}
+            <div className="profile">
+              <Link href='/profile'>
+                <Image
+                  width={40}
+                  height={40}
+                  src={profilePic}
+                  alt="Profile Picture"
+                  className="profile__image"
+                  priority
+                />
+              </Link>
+            </div>
+          )}
         </div>
       </div>
 
@@ -156,21 +168,20 @@ const Navbar = () => {
           ) : (
             <button onClick={logout} className="navbar__logout">Logout</button>
           )}
-
-            {/* user profile */}
           {user && (
-           <div className="profile">
-          <Link href='/profile'>
-          <Image
-             width={100}
-             height={100}
-             src="/profilePic/profilePic.svg"
-             alt="Profile Picture"
-             className="profile__image"
-           />
-          </Link>
-         </div>
-         )}
+            <div className="profile">
+              <Link href='/profile'>
+                <Image
+                  width={40}
+                  height={40}
+                  src={profilePic}
+                  alt="Profile Picture"
+                  className="profile__image"
+                  priority
+                />
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </nav>
