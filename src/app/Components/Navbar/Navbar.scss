@@ -200,12 +200,23 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+ 
 
     img {
       border-radius: 50%;
-      width: 50px;
-      height: 50px;
+      width: 70px;
+      height: 70px;
       object-fit: cover;
+      border: 2px solid #ff4d4f;
+
+
+      @media (min-width: 1024px) {
+        width: 50px;
+      height: 50px;
+
+      }
+
+
     }
 
     a {

@@ -1,16 +1,17 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import './ProfileHeader.scss';
-import Image from 'next/image';
+// import { CldImage } from 'next-cloudinary';
 import CountUp from 'react-countup';
 import { FaCamera } from 'react-icons/fa';
-import { auth, db, storage } from '@/lib/firebaseConfig';
-import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { auth, db } from '@/lib/firebaseConfig';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
+import Image from 'next/image';
 
 const ProfileHeader = () => {
-    const [profilePic, setProfilePic] = useState('/profilePic/profilePic.svg');
+    // const [profilePic, setProfilePic] = useState('https://res.cloudinary.com/dbbn1ttol/image/upload/v1616161616/sample.jpg');
+    const [profilePic, setProfilePic] = useState<string>('/profilePic/profilePic.png'); // Default profile picture
     const [userData, setUserData] = useState({
         fullName: '',
         email: '',
@@ -46,28 +47,35 @@ const ProfileHeader = () => {
         return () => unsubscribe();
     }, []);
 
-    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file && auth.currentUser) {
-            const storageRef = ref(storage, `profilePics/${auth.currentUser.uid}`);
-            const uploadTask = uploadBytesResumable(storageRef, file);
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', 'job_portal_upload_preset');
 
-            uploadTask.on(
-                'state_changed',
-                null,
-                (error) => {
-                    console.error('Upload error:', error);
-                },
-                async () => {
-                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            try {
+                const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const data = await response.json();
+                console.log('Cloudinary response:', data);
+
+                if (data.secure_url) {
+                    const downloadURL = data.secure_url;
                     setProfilePic(downloadURL);
-                    if (auth.currentUser) {
-                        await updateDoc(doc(db, 'users', auth.currentUser.uid), {
-                            profilePic: downloadURL,
-                        });
-                    }
+
+                    await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+                        profilePic: downloadURL,
+                    });
+                } else {
+                    console.error('Upload error: secure_url not found in response');
                 }
-            );
+            } catch (error) {
+                console.error('Upload error:', error);
+            }
         }
     };
 
@@ -83,6 +91,7 @@ const ProfileHeader = () => {
                                 className="profile-info__avatar"
                                 width={100}
                                 height={100}
+                                // crop="fill"
                             />
                             <label className="camera-icon">
                                 <FaCamera />

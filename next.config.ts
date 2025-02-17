@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_FIREBASE_APP_ID: process.env.FIREBASE_APP_ID,
     NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: process.env.FIREBASE_MEASUREMENT_ID,
   },
+  images: {
+    domains: ['res.cloudinary.com', 'lh3.googleusercontent.com'], 
+  },
 };
 
 export default nextConfig;
