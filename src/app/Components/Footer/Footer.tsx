@@ -10,7 +10,7 @@ const Footer = () => {
       <div className="footer__wrapper">
       <div className="footer-column">
         <div className='logo'>
-        <Image  src="/logo/logoIcon.svg" alt="logoicon" width={30} height={30}/>
+        <Image  src="/logo/logoIcon.svg" alt="logoicon" width={30} height={30} priority/>
         <h3> AlwaysApply</h3>
         </div>
       

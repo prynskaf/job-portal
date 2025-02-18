@@ -11,29 +11,36 @@ import { onAuthStateChanged, User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebaseConfig";
 
+
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const pathname = usePathname();
   const menuRef = useRef<HTMLDivElement>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [profilePic, setProfilePic] = useState<string>('/public/profilePic/profilePic.png'); // Default profile picture
+  const [profilePic, setProfilePic] = useState<string>('/profilePic/profilePic.png');
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
-        const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
-        if (userDoc.exists()) {
-          const data = userDoc.data();
-          if (data.profilePic) {
-            setProfilePic(data.profilePic);
+        try {
+          const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+          if (userDoc.exists()) {
+            const data = userDoc.data();
+            if (data.profilePic) {
+              setProfilePic(data.profilePic);
+            }
           }
+        } catch (error) {
+          console.error('Error fetching user profile:', error);
+          // Optionally set a default profile picture here
+          setProfilePic('/profilePic/profilePic.png');
         }
       }
     });
     return () => unsubscribe();
   }, []);
-
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -54,7 +61,7 @@ const Navbar = () => {
       {/* Mobile Nav */}
       <div className="navbar__mobile">
         <Link href="/" className="navbar__logo">
-          <Image width={30} height={30} src="/logo/logoIcon.svg" alt="Logo" />
+          <Image width={30} height={30} src="/logo/logoIcon.svg" alt="Logo"  priority/>
           <span>AlwaysApply</span>
         </Link>
         <button onClick={toggleMenu} className="navbar__toggle">
@@ -125,7 +132,7 @@ const Navbar = () => {
       {/* Desktop Nav */}
       <div className="navbar__desktop">
         <Link href="/" className="navbar__logo">
-          <Image width={30} height={30} src="/logo/logoIcon.svg" alt="Logo" />
+          <Image width={30} height={30} src="/logo/logoIcon.svg" alt="Logo" priority />
           <span>AlwaysApply</span>
         </Link>
 

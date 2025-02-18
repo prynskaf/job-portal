@@ -24,6 +24,8 @@
     align-items: center;
     gap: 0.5rem;
     text-decoration: none;
+    width: 30px;
+    height: 30px;
 
     span {
       font-size: 1.25rem;
@@ -110,13 +112,20 @@
 
     @media (min-width: 1024px) {
       display: flex;
+      align-items: center !important;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    max-width: 80rem;
+    margin: 0 auto;
     }
   }
 
   &__nav {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 2rem;
+    margin-left: 11rem !important;
 
     a {
       color: #4a5568;
@@ -204,8 +213,8 @@
 
     img {
       border-radius: 50%;
-      width: 70px;
-      height: 70px;
+      width: 60px;
+      height: 60px;
       object-fit: cover;
       border: 2px solid #ff4d4f;
 
