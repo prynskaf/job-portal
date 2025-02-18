@@ -1,3 +1,10 @@
+/** 
+ * @param config Configuration object
+ * @param config.cloud_name Your cloudinary cloud name
+ * @param config.api_key Your API key (should be stored in environment variables)
+ * @param config.api_secret Your API secret (should be stored in environment variables)
+ */
+
 declare module 'cloudinary' {
     export const v2: {
       config: (config: {

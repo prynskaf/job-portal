@@ -8,10 +8,10 @@ import { auth, db } from '@/lib/firebaseConfig';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import Image from 'next/image';
+import { toast } from "sonner";
 
 const ProfileHeader = () => {
-    // const [profilePic, setProfilePic] = useState('https://res.cloudinary.com/dbbn1ttol/image/upload/v1616161616/sample.jpg');
-    const [profilePic, setProfilePic] = useState<string>('/profilePic/profilePic.png'); // Default profile picture
+    const [profilePic, setProfilePic] = useState<string>('/profilePic/profilePic.png');
     const [userData, setUserData] = useState({
         fullName: '',
         email: '',
@@ -50,9 +50,21 @@ const ProfileHeader = () => {
     const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file && auth.currentUser) {
+            // Validate file type
+            if (!file.type.match('image.*')) {
+                toast.error('Only image files are allowed');
+                return;
+            }
+            // Validate file size (e.g., 5MB limit)
+            if (file.size > 5 * 1024 * 1024) {
+                toast.error('File is too large. Maximum size is 5MB');
+                return;
+            }
             const formData = new FormData();
             formData.append('file', file);
             formData.append('upload_preset', 'job_portal_upload_preset');
+
+            const loadingToastId = toast.loading("Uploading...");
 
             try {
                 const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
@@ -61,20 +73,25 @@ const ProfileHeader = () => {
                 });
 
                 const data = await response.json();
-                console.log('Cloudinary response:', data);
+                // console.log('Cloudinary response:', data);
 
                 if (data.secure_url) {
                     const downloadURL = data.secure_url;
-                    setProfilePic(downloadURL);
-
+                    // Update the UI only after confirming the Firestore update:
                     await updateDoc(doc(db, 'users', auth.currentUser.uid), {
                         profilePic: downloadURL,
                     });
+                    setProfilePic(downloadURL);
+                    toast.success('Image uploaded successfully');
                 } else {
-                    console.error('Upload error: secure_url not found in response');
+                    console.error('Upload error: secure_url not found in response', data);
+                    throw new Error('Failed to process uploaded image. Please try again.');
                 }
             } catch (error) {
                 console.error('Upload error:', error);
+                toast.error('Upload failed. Please try again.');
+            } finally {
+                toast.dismiss(loadingToastId);
             }
         }
     };
@@ -91,7 +108,7 @@ const ProfileHeader = () => {
                                 className="profile-info__avatar"
                                 width={100}
                                 height={100}
-                                // crop="fill"
+                               priority
                             />
                             <label className="camera-icon">
                                 <FaCamera />
@@ -113,7 +130,7 @@ const ProfileHeader = () => {
                         <div className="job-stats__item">
                             <p>Saved Jobs</p>
                             <h3>
-                                <CountUp start={0} end={userData.savedJobs} duration={2.5} separator="," />+ 
+                                <CountUp start={0} end={userData.savedJobs} duration={2.5} separator="," />+
                             </h3>
                         </div>
                         <div className="job-stats__item">
