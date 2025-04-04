@@ -31,7 +31,7 @@ const ViewDetails = () => {
             <p>$120,000 to $150,000 yearly</p>
           </div>
           <div className="info-item">
-            <h3>START DATE</h3>
+            <h3>Job Posted</h3>
             <p>1st of June 2020</p>
           </div>
           <div className="info-item">
