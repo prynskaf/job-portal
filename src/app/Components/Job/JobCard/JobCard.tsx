@@ -1,14 +1,25 @@
-import React from 'react';
-import './JobCard.scss';
+// components/jobs/JobCard.tsx
+'use client';
+
 import { Bookmark, Users } from 'lucide-react';
 import Image from 'next/image';
 import { HiOutlineLocationMarker } from "react-icons/hi";
-import { JobCardProps } from '@/app/utils/joblist/job';
 import Link from 'next/link';
+import './JobCard.scss';
 
-
+interface JobCardProps {
+  id: string;
+  title: string;
+  type: string;
+  salary: string;
+  company: string;
+  location: string;
+  applicants: number;
+  logo: string;
+}
 
 const JobCard: React.FC<JobCardProps> = ({
+  id,
   title,
   type,
   salary,
@@ -19,7 +30,6 @@ const JobCard: React.FC<JobCardProps> = ({
 }) => {
   return (
     <div className="card">
-
       <div className="grid first-grid">
         <div className="title-and-icon">
           <h3 className="title">{title}</h3>
@@ -27,20 +37,28 @@ const JobCard: React.FC<JobCardProps> = ({
         </div>
 
         <div className="type-and-salary">
-          <span className={`type ${type === 'FULL-TIME' ? 'fullTime' : 'partTime'}`}>{type}</span>
-          <p className="salary"> {salary}</p>
+          <span className={`type ${type === 'Full-Time' ? 'fullTime' : 'partTime'}`}>
+            {type}
+          </span>
+          <p className="salary">{salary}</p>
         </div>
       </div>
 
       <div className="grid second-grid">
-        <Image src={logo} alt={`${company} logo`} width={500} height={500} className="logo" />
-       <div className="company-and-location">
-         <p className="company">{company}</p>
+        <Image 
+          src={logo || '/default-company.png'} 
+          alt={`${company} logo`} 
+          width={48} 
+          height={48} 
+          className="logo" 
+        />
+        <div className="company-and-location">
+          <p className="company">{company}</p>
           <span className='flex gap-2'>
             <HiOutlineLocationMarker />
             <p className="location">{location}</p>
-            </span>
-       </div>
+          </span>
+        </div>
       </div>
 
       <div className="grid third-grid">
@@ -51,15 +69,15 @@ const JobCard: React.FC<JobCardProps> = ({
       </div>
 
       <div className="grid fourth-grid actions">
-        <button className="viewDetails"><Link href="jobs/viewDetails">View details</Link></button>
-        <button className="applyNow"><Link href="jobs/apply">Apply now</Link></button>
+        <button className="viewDetails">
+          <Link href={`/jobs/${id}`}>View details</Link>
+        </button>
+        <button className="applyNow">
+          <Link href={`/jobs/${id}/apply`}>Apply now</Link>
+        </button>
       </div>
     </div>
   );
 };
 
 export default JobCard;
-
-
-
-
