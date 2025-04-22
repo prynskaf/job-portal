@@ -1,4 +1,3 @@
-// components/providers/ReduxProvider.tsx
 'use client';
 
 import { useRef } from 'react';

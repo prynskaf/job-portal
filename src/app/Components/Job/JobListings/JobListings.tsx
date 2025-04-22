@@ -1,7 +1,7 @@
 // components/jobs/JobListings.tsx
 'use client';
 
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import { fetchInitialJobs } from '@/lib/redux/jobsSlice';
 import Link from 'next/link';
@@ -19,16 +19,18 @@ const JobListings = () => {
   }, [dispatch]);
 
   if (isLoading) return <div className="loading">Loading jobs...</div>;
-  if (error) return <div className="error">Error: {error}</div>;
+  if (error) return <div className="error">An error occurred while loading jobs. Please try again later.</div>;
 
   console.log('Filtered Jobs:', filteredJobs);
+
+  const MemoizedJobCard = React.memo(JobCard);
 
   return (
     <div className='joblistings'>
       <div className='joblistings__wrapper'>
         {filteredJobs.map((job) => (
           <div className="job__card" key={job.id}>
-            <JobCard 
+            <MemoizedJobCard 
               title={job.title}
               type={job.jobType}
               salary={`$${job.salaryMin} - $${job.salaryMax}`}

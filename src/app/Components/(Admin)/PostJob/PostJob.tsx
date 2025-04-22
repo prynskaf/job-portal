@@ -160,9 +160,8 @@ const PostJob: React.FC = () => {
         salaryMin: Number(job.salaryMin),
         salaryMax: Number(job.salaryMax),
         company_logo: logoURL,
-        postedAt: serverTimestamp(), // Use server timestamp for consistency
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
+        postedAt: new Date().toISOString(), // Convert to string
+         updatedAt: new Date().toISOString() // Convert to string
       });
 
       toast.success("Job posted successfully!");

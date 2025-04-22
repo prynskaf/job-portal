@@ -19,14 +19,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-      <ReduxProvider>
+      
         <main className="">
         <Navbar />
+        <ReduxProvider>
         {children}
+        </ReduxProvider>
         <Toaster position="bottom-left" richColors />
         <Footer/>
         </main>
-        </ReduxProvider>
       </body>
     </html>
   );
