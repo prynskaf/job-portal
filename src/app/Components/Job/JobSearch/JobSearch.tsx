@@ -5,6 +5,8 @@ import Filter from '../Filter/Filter'
 import JobListings from '../JobListings/JobListings'
 import Dropdown from '../Dropdown/Dropdown'
 
+
+
 const JobSearch = () => {
   return (
     <div className='jobs__page'>
@@ -22,7 +24,7 @@ const JobSearch = () => {
             <button>clear</button>
             <h2>All Jobs(100)</h2>
           </div>
-
+            
           <Dropdown />
 
         </div>
@@ -33,6 +35,7 @@ const JobSearch = () => {
             <Filter />
           </div>
 
+          {/* job listings */}
           <div className='RightSection '>
             <JobListings />
           </div>

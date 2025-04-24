@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useCallback, ChangeEvent, FormEvent } from "react";
-import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { collection, doc, setDoc } from "firebase/firestore";
 import "./PostJob.scss";
 import { db } from "@/lib/firebaseConfig";
 import { toast } from "sonner";
