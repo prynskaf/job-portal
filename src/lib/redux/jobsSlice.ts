@@ -1,11 +1,11 @@
 // lib/redux/jobsSlice.ts
-import { fetchAllJobs, fetchFilteredJobs } from '@/app/services/jobsApi';
+import { fetchAllJobs, fetchFilteredJobs, fetchMatchingJobTitles, fetchMatchingLocations } from '@/app/services/jobsApi';
 import { Job } from '@/app/types/job';
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 
 interface SearchQuery {
   jobTitle: string;
-  country: string;
+  location: string;
 }
 
 interface Filters {
@@ -18,12 +18,14 @@ interface Filters {
 }
 
 interface JobsState {
-  allJobs: Job[]; // Store all jobs here
-  filteredJobs: Job[]; // Store filtered results here
+  allJobs: Job[];
+  filteredJobs: Job[];
   isLoading: boolean;
   error: string | null;
   searchQuery: SearchQuery;
   filters: Filters;
+  titleSuggestions: string[]; // New state to hold job title suggestions
+  locationSuggestions: string[]; // New state to hold location suggestions
 }
 
 const initialState: JobsState = {
@@ -33,7 +35,7 @@ const initialState: JobsState = {
   error: null,
   searchQuery: {
     jobTitle: '',
-    country: '',
+    location: '',
   },
   filters: {
     jobType: [],
@@ -43,24 +45,30 @@ const initialState: JobsState = {
     salaryMin: 0,
     salaryMax: 200000,
   },
+  titleSuggestions: [],
+  locationSuggestions: [],
 };
 
 // Fetch all jobs initially
-export const fetchInitialJobs = createAsyncThunk(
-  'jobs/fetchInitialJobs',
-  async () => {
-    return await fetchAllJobs();
-  }
-);
+export const fetchInitialJobs = createAsyncThunk('jobs/fetchInitialJobs', async () => {
+  return await fetchAllJobs();
+});
 
 // Fetch filtered jobs based on search and filters
-export const fetchJobs = createAsyncThunk(
-  'jobs/fetchJobs',
-  async (_, { getState }) => {
-    const { jobs } = getState() as { jobs: JobsState };
-    return await fetchFilteredJobs(jobs.searchQuery, jobs.filters);
-  }
-);
+export const fetchJobs = createAsyncThunk('jobs/fetchJobs', async (_, { getState }) => {
+  const { jobs } = getState() as { jobs: JobsState };
+  return await fetchFilteredJobs(jobs.searchQuery, jobs.filters);
+});
+
+// Fetch matching job titles
+export const fetchJobTitleSuggestions = createAsyncThunk('jobs/fetchJobTitleSuggestions', async (title: string) => {
+  return await fetchMatchingJobTitles(title);
+});
+
+// Fetch matching locations
+export const fetchLocationSuggestions = createAsyncThunk('jobs/fetchLocationSuggestions', async (location: string) => {
+  return await fetchMatchingLocations(location);
+});
 
 const jobsSlice = createSlice({
   name: 'jobs',
@@ -74,7 +82,7 @@ const jobsSlice = createSlice({
     },
     resetFilters(state) {
       state.filters = initialState.filters;
-      state.filteredJobs = state.allJobs; // Show all jobs when resetting
+      state.filteredJobs = state.allJobs;
     },
   },
   extraReducers: (builder) => {
@@ -87,7 +95,7 @@ const jobsSlice = createSlice({
       .addCase(fetchInitialJobs.fulfilled, (state, action) => {
         state.isLoading = false;
         state.allJobs = action.payload;
-        state.filteredJobs = action.payload; // Initially show all jobs
+        state.filteredJobs = action.payload;
       })
       .addCase(fetchInitialJobs.rejected, (state, action) => {
         state.isLoading = false;
@@ -105,6 +113,14 @@ const jobsSlice = createSlice({
       .addCase(fetchJobs.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message || 'Failed to fetch jobs';
+      })
+      // Job title suggestions
+      .addCase(fetchJobTitleSuggestions.fulfilled, (state, action) => {
+        state.titleSuggestions = action.payload;
+      })
+      // Location suggestions
+      .addCase(fetchLocationSuggestions.fulfilled, (state, action) => {
+        state.locationSuggestions = action.payload;
       });
   },
 });

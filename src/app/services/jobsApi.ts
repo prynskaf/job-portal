@@ -17,7 +17,7 @@ export const fetchAllJobs = async (): Promise<Job[]> => {
 
 // Fetch jobs with filters
 export const fetchFilteredJobs = async (
-  searchQuery: { jobTitle: string; country: string },
+  searchQuery: { jobTitle: string; location: string },
   filters: {
     jobType?: string[];
     workMode?: string[];
@@ -34,8 +34,8 @@ export const fetchFilteredJobs = async (
     if (searchQuery.jobTitle) {
       q = query(q, where('title', '>=', searchQuery.jobTitle));
     }
-    if (searchQuery.country) {
-      q = query(q, where('location', '==', searchQuery.country));
+    if (searchQuery.location) {
+      q = query(q, where('location', '==', searchQuery.location));
     }
 
     // Apply other filters
@@ -66,5 +66,45 @@ export const fetchFilteredJobs = async (
   } catch (error) {
     console.error('Error fetching filtered jobs:', error);
     return []; // Return an empty array in case of an error
+  }
+};
+
+// Fetch unique job titles based on input
+export const fetchMatchingJobTitles = async (input: string): Promise<string[]> => {
+  try {
+    const snapshot = await getDocs(collection(db, 'jobs'));
+    const titlesSet = new Set<string>();
+
+    snapshot.docs.forEach((doc) => {
+      const title = doc.data().title;
+      if (title && title.toLowerCase().includes(input.toLowerCase())) {
+        titlesSet.add(title.trim());
+      }
+    });
+
+    return Array.from(titlesSet);
+  } catch (error) {
+    console.error('Error fetching job titles:', error);
+    return [];
+  }
+};
+
+// Fetch unique locations based on input
+export const fetchMatchingLocations = async (input: string): Promise<string[]> => {
+  try {
+    const snapshot = await getDocs(collection(db, 'jobs'));
+    const locationsSet = new Set<string>();
+
+    snapshot.docs.forEach((doc) => {
+      const location = doc.data().location;
+      if (location && location.toLowerCase().includes(input.toLowerCase())) {
+        locationsSet.add(location.trim());
+      }
+    });
+
+    return Array.from(locationsSet);
+  } catch (error) {
+    console.error('Error fetching locations:', error);
+    return [];
   }
 };
