@@ -1,5 +1,5 @@
 // services/jobsApi.ts
-import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { collection, query, where, getDocs, orderBy, startAfter, limit } from 'firebase/firestore';
 import { Job } from '../types/job';
 import { db } from '@/lib/firebaseConfig';
 
@@ -17,6 +17,29 @@ export const fetchAllJobs = async (): Promise<Job[]> => {
 
 // Fetch jobs with filters
 export const fetchFilteredJobs = async (
+  searchQuery: { jobTitle?: string; location?: string }
+): Promise<Job[]> => {
+  try {
+    let q = query(collection(db, 'jobs'));
+
+    // Fetch jobs filtered by location or title
+    if (searchQuery.jobTitle) {
+      q = query(q, where('title', '>=', searchQuery.jobTitle));
+    }
+    if (searchQuery.location) {
+      q = query(q, where('location', '==', searchQuery.location));
+    }
+
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Job));
+  } catch (error) {
+    console.error('Error fetching filtered jobs:', error);
+    return [];
+  }
+};
+
+// Fetch paginated jobs with filters
+export const fetchPaginatedJobs = async (
   searchQuery: { jobTitle: string; location: string },
   filters: {
     jobType?: string[];
@@ -25,8 +48,11 @@ export const fetchFilteredJobs = async (
     experienceLevel?: string[];
     salaryMin?: number;
     salaryMax?: number;
-  }
-): Promise<Job[]> => {
+    sortBy?: 'newest' | 'oldest';
+  },
+  lastDoc: any, // Firestore document snapshot for pagination
+  limitCount: number = 10 // Number of jobs per page
+): Promise<{ jobs: Job[]; lastVisible: any }> => {
   try {
     let q = query(collection(db, 'jobs'));
 
@@ -51,21 +77,38 @@ export const fetchFilteredJobs = async (
     if (filters.experienceLevel?.length) {
       q = query(q, where('experienceLevel', 'in', filters.experienceLevel));
     }
-    if (filters.salaryMin) {
+    if (filters.salaryMin !== undefined && filters.salaryMax !== undefined) {
+      // Composite index required for range filters on salaryMin and salaryMax
+      q = query(
+        q,
+        where('salaryMin', '>=', filters.salaryMin),
+        where('salaryMax', '<=', filters.salaryMax)
+      );
+    } else if (filters.salaryMin !== undefined) {
       q = query(q, where('salaryMin', '>=', filters.salaryMin));
-    }
-    if (filters.salaryMax) {
+    } else if (filters.salaryMax !== undefined) {
       q = query(q, where('salaryMax', '<=', filters.salaryMax));
     }
 
-    // Always sort by newest first
-    q = query(q, orderBy('postedAt', 'desc'));
+    // Apply sorting
+    const sortOrder = filters.sortBy === 'oldest' ? 'asc' : 'desc';
+    q = query(q, orderBy('postedAt', sortOrder));
+
+    // Apply pagination
+    if (lastDoc) {
+      q = query(q, startAfter(lastDoc), limit(limitCount));
+    } else {
+      q = query(q, limit(limitCount));
+    }
 
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Job));
+    const jobs = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() } as Job));
+    const lastVisible = snapshot.docs[snapshot.docs.length - 1];
+
+    return { jobs, lastVisible };
   } catch (error) {
-    console.error('Error fetching filtered jobs:', error);
-    return []; // Return an empty array in case of an error
+    console.error('Error fetching paginated jobs:', error);
+    return { jobs: [], lastVisible: null };
   }
 };
 

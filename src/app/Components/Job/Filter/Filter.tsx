@@ -1,12 +1,35 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Filter.scss';
-import { filterData } from '@/app/utils/filterData/filterData';
+import { fetchFilterData, FilterCategory } from '@/app/utils/filterData/filterData';
 import { CiFilter } from 'react-icons/ci';
+import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
+import { setFilters } from '@/lib/redux/jobsSlice';
+import { fetchJobs } from '@/lib/redux/jobsSlice';
 
 const Filter: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { filters } = useAppSelector((state) => state.jobs);
+  const [filterData, setFilterData] = useState<FilterCategory[]>([]);
   const [expanded, setExpanded] = useState<string[] | null>(null);
-  const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false); 
+  const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadFilterData = async () => {
+      setIsLoading(true);
+      try {
+        const data = await fetchFilterData();
+        setFilterData(data);
+      } catch (err) {
+        setError('Failed to load filters. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadFilterData();
+  }, []);
 
   const toggleAccordion = (title: string) => {
     setExpanded((prev) => {
@@ -17,46 +40,33 @@ const Filter: React.FC = () => {
     });
   };
 
-  const expandAll = () => {
-    const allTitles = filterData.map((category) => category.title);
-    setExpanded(allTitles);
+  const handleCheckboxChange = (category: string, option: string) => {
+    const updatedCategory = filters[category as keyof typeof filters] || [];
+    const updatedFilters = updatedCategory.includes(option)
+      ? updatedCategory.filter((item) => item !== option)
+      : [...updatedCategory, option];
+
+    dispatch(setFilters({ [category]: updatedFilters }));
+    dispatch(fetchJobs()); // Trigger job fetch after filter update
   };
 
-  const toggleFilterVisibility = () => {
-    setIsFilterVisible((prev) => !prev);
-  };
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
+
+  if (isLoading) {
+    return <div className="loading">Loading filters...</div>;
+  }
 
   return (
     <>
       <div className="onMobileFile">
-        <button onClick={toggleFilterVisibility} className="filter-toggle-button">
+        <button onClick={() => setIsFilterVisible((prev) => !prev)} className="filter-toggle-button">
           <CiFilter fontSize={25} />
           {isFilterVisible ? 'Hide Filter' : 'Show Filter'}
         </button>
       </div>
-      <div
-        className={`filter-container ${isFilterVisible ? 'visible' : 'hidden'}`}
-      >
-        {/* Salary Range */}
-        <div className="filter-group salary-range">
-          <h4 className="salary-range-title">Salary Range</h4>
-          <div className="salary-inputs">
-            <input
-              type="number"
-              placeholder="Min"
-              className="salary-input"
-              aria-label="Minimum Salary"
-            />
-            <input
-              type="number"
-              placeholder="Max"
-              className="salary-input"
-              aria-label="Maximum Salary"
-            />
-          </div>
-        </div>
-
-        {/* Dynamic Filter Categories */}
+      <div className={`filter-container ${isFilterVisible ? 'visible' : 'hidden'}`}>
         {filterData.map((category) => (
           <div key={category.title} className="filter-group">
             <h4 onClick={() => toggleAccordion(category.title)} className="filter-header">
@@ -76,7 +86,13 @@ const Filter: React.FC = () => {
             >
               {category.options.map((option) => (
                 <label key={option.label} className="filter-option">
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    checked={
+                      filters[category.key as keyof typeof filters]?.includes(option.label) || false
+                    }
+                    onChange={() => handleCheckboxChange(category.key, option.label)}
+                  />
                   <span>{option.label}</span>
                   <span className="count">({option.count})</span>
                 </label>
@@ -84,10 +100,6 @@ const Filter: React.FC = () => {
             </div>
           </div>
         ))}
-
-        <button className="expand-all" onClick={expandAll}>
-          Expand all
-        </button>
       </div>
     </>
   );

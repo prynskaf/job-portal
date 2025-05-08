@@ -15,6 +15,7 @@ interface Filters {
   experienceLevel?: string[];
   salaryMin?: number;
   salaryMax?: number;
+  sortBy?: 'newest' | 'oldest'; // Added sortBy filter
 }
 
 interface JobsState {
@@ -44,6 +45,7 @@ const initialState: JobsState = {
     experienceLevel: [],
     salaryMin: 0,
     salaryMax: 200000,
+    sortBy: 'newest', // Default sortBy filter
   },
   titleSuggestions: [],
   locationSuggestions: [],
@@ -57,7 +59,25 @@ export const fetchInitialJobs = createAsyncThunk('jobs/fetchInitialJobs', async 
 // Fetch filtered jobs based on search and filters
 export const fetchJobs = createAsyncThunk('jobs/fetchJobs', async (_, { getState }) => {
   const { jobs } = getState() as { jobs: JobsState };
-  return await fetchFilteredJobs(jobs.searchQuery, jobs.filters);
+
+  // Fetch broad data from Firestore
+  const allJobs = await fetchFilteredJobs(jobs.searchQuery);
+
+  // Apply client-side filtering
+  const filteredJobs = allJobs.filter((job) => {
+    const matchesJobType = !jobs.filters.jobType?.length || jobs.filters.jobType.includes(job.jobType);
+    const matchesWorkMode = !jobs.filters.workMode?.length || jobs.filters.workMode.includes(job.workMode);
+    const matchesJobFunction = !jobs.filters.jobFunction?.length || jobs.filters.jobFunction.includes(job.function);
+    const matchesExperienceLevel =
+      !jobs.filters.experienceLevel?.length || jobs.filters.experienceLevel.includes(job.experienceLevel);
+    const matchesSalary =
+      (jobs.filters.salaryMin === undefined || job.salaryMin >= jobs.filters.salaryMin) &&
+      (jobs.filters.salaryMax === undefined || job.salaryMax <= jobs.filters.salaryMax);
+
+    return matchesJobType && matchesWorkMode && matchesJobFunction && matchesExperienceLevel && matchesSalary;
+  });
+
+  return filteredJobs;
 });
 
 // Fetch matching job titles
@@ -82,6 +102,7 @@ const jobsSlice = createSlice({
     },
     resetFilters(state) {
       state.filters = initialState.filters;
+      state.searchQuery = initialState.searchQuery;
       state.filteredJobs = state.allJobs;
     },
   },
