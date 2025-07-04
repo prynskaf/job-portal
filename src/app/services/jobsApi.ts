@@ -22,9 +22,8 @@ export const fetchFilteredJobs = async (
   try {
     let q = query(collection(db, 'jobs'));
 
-    // Fetch jobs filtered by location or title
     if (searchQuery.jobTitle) {
-      q = query(q, where('title', '>=', searchQuery.jobTitle));
+      q = query(q, where('title', '==', searchQuery.jobTitle));
     }
     if (searchQuery.location) {
       q = query(q, where('location', '==', searchQuery.location));

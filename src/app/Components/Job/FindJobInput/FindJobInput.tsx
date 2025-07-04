@@ -2,10 +2,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
 import { fetchJobTitleSuggestions, fetchLocationSuggestions, setSearchQuery, fetchJobs } from '@/lib/redux/jobsSlice';
-import { debounce } from 'lodash'; // Use lodash for debouncing
+import { debounce } from 'lodash';
 import { CiSearch } from 'react-icons/ci';
 import { IoLocationOutline } from 'react-icons/io5';
-import { useRouter, usePathname } from 'next/navigation'; // Import useRouter and usePathname from next/navigation
+import { useRouter, usePathname } from 'next/navigation';
 import './FindJobInput.scss';
 
 const FindJobInput: React.FC = () => {
@@ -14,54 +14,41 @@ const FindJobInput: React.FC = () => {
 
     const [jobQuery, setJobQuery] = useState(searchQuery.jobTitle);
     const [locationQuery, setLocationQuery] = useState(searchQuery.location);
-
     const [showJobSuggestions, setShowJobSuggestions] = useState(false);
     const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
-    const [focusedField, setFocusedField] = useState<null | 'job' | 'location'>(null); // Track focused field
     const inputRef = useRef<HTMLDivElement | null>(null);
 
-    const router = useRouter(); // Initialize useRouter from next/navigation
-    const pathname = usePathname(); // Get current path
+    const router = useRouter();
+    const pathname = usePathname();
 
-    const [localSearchQuery, setLocalSearchQuery] = useState({ jobTitle: '', location: '' });
-    const [debouncedQuery, setDebouncedQuery] = useState(localSearchQuery);
+    // Debounced fetch for suggestions only
+    const fetchJobSuggestionsDebounced = debounce((query: string) => {
+        dispatch(fetchJobTitleSuggestions(query));
+    }, 200);
 
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            setDebouncedQuery(localSearchQuery);
-        }, 500); // 500ms debounce
+    const fetchLocationSuggestionsDebounced = debounce((query: string) => {
+        dispatch(fetchLocationSuggestions(query));
+    }, 200);
 
-        return () => clearTimeout(handler);
-    }, [localSearchQuery]);
-
-    useEffect(() => {
-        dispatch(setSearchQuery(debouncedQuery));
-        dispatch(fetchJobs());
-    }, [debouncedQuery, dispatch]);
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setLocalSearchQuery((prev) => ({ ...prev, [name]: value }));
+    // Handle job input change (instant update, debounce fetch)
+    const handleJobQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setJobQuery(value);
+        setShowJobSuggestions(value.length > 0);
+        fetchJobSuggestionsDebounced(value);
     };
 
-    const handleJobQueryChange = debounce((query: string) => {
-        setJobQuery(query);
-        dispatch(fetchJobTitleSuggestions(query));
-        setShowJobSuggestions(query.length > 0);
-    }, 200);
-
-    const handleLocationQueryChange = debounce((query: string) => {
-        setLocationQuery(query);
-        dispatch(fetchLocationSuggestions(query));
-        setShowLocationSuggestions(query.length > 0);
-    }, 200);
+    // Handle location input change (instant update, debounce fetch)
+    const handleLocationQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setLocationQuery(value);
+        setShowLocationSuggestions(value.length > 0);
+        fetchLocationSuggestionsDebounced(value);
+    };
 
     const handleInputFocus = (field: 'job' | 'location') => {
-        if (focusedField !== field) { // Only show suggestions if different field is focused
-            setFocusedField(field);
-            if (field === 'job') setShowJobSuggestions(true);
-            if (field === 'location') setShowLocationSuggestions(true);
-        }
+        if (field === 'job') setShowJobSuggestions(true);
+        if (field === 'location') setShowLocationSuggestions(true);
     };
 
     const clearSuggestions = () => {
@@ -75,50 +62,41 @@ const FindJobInput: React.FC = () => {
                 clearSuggestions();
             }
         };
-
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
 
+    // Keep Redux state in sync with local state for query params
     useEffect(() => {
-        // When the job or location query changes, update the search query in the Redux store
         dispatch(setSearchQuery({ jobTitle: jobQuery, location: locationQuery }));
-
-        // Update the URL query parameters based on the current input values
         const queryParams = new URLSearchParams();
         if (jobQuery) queryParams.append('jobTitle', jobQuery);
         if (locationQuery) queryParams.append('location', locationQuery);
-
-        // If jobQuery or locationQuery is empty, remove that parameter from the URL
-        if (!jobQuery) queryParams.delete('jobTitle');
-        if (!locationQuery) queryParams.delete('location');
-
-        // Update the URL with the new query parameters
         router.replace(`${pathname}?${queryParams.toString()}`);
     }, [jobQuery, locationQuery, dispatch, pathname, router]);
 
     const handleSuggestionClick = (value: string, type: 'job' | 'location') => {
         if (type === 'job') {
             setJobQuery(value);
+            setShowJobSuggestions(false);
         } else {
             setLocationQuery(value);
+            setShowLocationSuggestions(false);
         }
-
         clearSuggestions();
     };
 
+    // Accurate search: update Redux state, then fetch jobs
     const handleSearch = () => {
         if (!jobQuery && !locationQuery) return;
-
+        dispatch(setSearchQuery({ jobTitle: jobQuery, location: locationQuery }));
+        dispatch(fetchJobs());
         const queryParams = new URLSearchParams();
         if (jobQuery) queryParams.append('jobTitle', jobQuery);
         if (locationQuery) queryParams.append('location', locationQuery);
-
         router.push(`/jobs?${queryParams.toString()}`);
-        dispatch(setSearchQuery({ jobTitle: jobQuery, location: locationQuery }));
-        dispatch(fetchJobs()); // Trigger job fetch
     };
 
     return (
@@ -130,7 +108,7 @@ const FindJobInput: React.FC = () => {
                         type="search"
                         placeholder="Job title, Keyword..."
                         value={jobQuery}
-                        onChange={(e) => handleJobQueryChange(e.target.value)}
+                        onChange={handleJobQueryChange}
                         onFocus={() => handleInputFocus('job')}
                     />
                 </label>
@@ -140,16 +118,14 @@ const FindJobInput: React.FC = () => {
                         type="search"
                         placeholder="Location"
                         value={locationQuery}
-                        onChange={(e) => handleLocationQueryChange(e.target.value)}
+                        onChange={handleLocationQueryChange}
                         onFocus={() => handleInputFocus('location')}
                     />
                 </label>
-
                 <button onClick={handleSearch} disabled={isLoading}>
                     {isLoading ? 'Loading...' : 'Search'}
                 </button>
             </div>
-
             {(showJobSuggestions || showLocationSuggestions) && (
                 <div className="suggestions__container">
                     {showJobSuggestions && (
@@ -169,7 +145,6 @@ const FindJobInput: React.FC = () => {
                             )}
                         </div>
                     )}
-
                     {showLocationSuggestions && (
                         <div className="location__suggestions">
                             {locationSuggestions.length > 0 ? (
@@ -189,7 +164,6 @@ const FindJobInput: React.FC = () => {
                     )}
                 </div>
             )}
-
             {(!showJobSuggestions && !showLocationSuggestions) && (
                 <p>
                     Suggestion: UI/UX Designer, Programming, <span>Digital Marketing</span>, Video, Animation.
@@ -200,3 +174,4 @@ const FindJobInput: React.FC = () => {
 };
 
 export default FindJobInput;
+                                  

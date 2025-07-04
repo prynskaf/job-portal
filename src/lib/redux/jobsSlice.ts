@@ -59,12 +59,16 @@ export const fetchInitialJobs = createAsyncThunk('jobs/fetchInitialJobs', async 
 // Fetch filtered jobs based on search and filters
 export const fetchJobs = createAsyncThunk('jobs/fetchJobs', async (_, { getState }) => {
   const { jobs } = getState() as { jobs: JobsState };
+  const allJobs = await fetchAllJobs(); // fetch all jobs or a subset
 
-  // Fetch broad data from Firestore
-  const allJobs = await fetchFilteredJobs(jobs.searchQuery);
-
-  // Apply client-side filtering
+  // Apply client-side filtering for partial match
   const filteredJobs = allJobs.filter((job) => {
+    const matchesTitle =
+      !jobs.searchQuery.jobTitle ||
+      job.title.toLowerCase().includes(jobs.searchQuery.jobTitle.toLowerCase());
+    const matchesLocation =
+      !jobs.searchQuery.location ||
+      job.location.toLowerCase().includes(jobs.searchQuery.location.toLowerCase());
     const matchesJobType = !jobs.filters.jobType?.length || jobs.filters.jobType.includes(job.jobType);
     const matchesWorkMode = !jobs.filters.workMode?.length || jobs.filters.workMode.includes(job.workMode);
     const matchesJobFunction = !jobs.filters.jobFunction?.length || jobs.filters.jobFunction.includes(job.function);
@@ -74,7 +78,15 @@ export const fetchJobs = createAsyncThunk('jobs/fetchJobs', async (_, { getState
       (jobs.filters.salaryMin === undefined || job.salaryMin >= jobs.filters.salaryMin) &&
       (jobs.filters.salaryMax === undefined || job.salaryMax <= jobs.filters.salaryMax);
 
-    return matchesJobType && matchesWorkMode && matchesJobFunction && matchesExperienceLevel && matchesSalary;
+    return (
+      matchesTitle &&
+      matchesLocation &&
+      matchesJobType &&
+      matchesWorkMode &&
+      matchesJobFunction &&
+      matchesExperienceLevel &&
+      matchesSalary
+    );
   });
 
   return filteredJobs;
