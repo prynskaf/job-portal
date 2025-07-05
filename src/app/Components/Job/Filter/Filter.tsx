@@ -1,43 +1,47 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './Filter.scss';
 import { fetchFilterData, FilterCategory } from '@/app/utils/filterData/filterData';
 import { CiFilter } from 'react-icons/ci';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
-import { setFilters } from '@/lib/redux/jobsSlice';
-import { fetchJobs } from '@/lib/redux/jobsSlice';
+import { setFilters, fetchJobs } from '@/lib/redux/jobsSlice';
+
+const titles = ['Job Type', 'Work Mode', 'Job Functions', 'Experience Level'];
 
 const Filter: React.FC = () => {
   const dispatch = useAppDispatch();
   const { filters } = useAppSelector((state) => state.jobs);
+
   const [filterData, setFilterData] = useState<FilterCategory[]>([]);
-  const [expanded, setExpanded] = useState<string[] | null>(null);
-  const [isFilterVisible, setIsFilterVisible] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState<string[]>([]);
+  const [fetched, setFetched] = useState<string[]>([]);
+  const [loadingTitles, setLoadingTitles] = useState<string[]>([]);
+  const [errors, setErrors] = useState<Record<string, string | null>>({});
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
 
-  useEffect(() => {
-    const loadFilterData = async () => {
-      setIsLoading(true);
+  const toggleAccordion = async (title: string) => {
+    const isOpen = expanded.includes(title);
+
+    setExpanded((prev) =>
+      isOpen ? prev.filter((item) => item !== title) : [...prev, title]
+    );
+
+    if (!fetched.includes(title)) {
+      setLoadingTitles((prev) => [...prev, title]);
+
       try {
-        const data = await fetchFilterData();
-        setFilterData(data);
+        const allData = await fetchFilterData();
+        const category = allData.find((cat) => cat.title === title);
+        if (category) {
+          setFilterData((prev) => [...prev, category]);
+          setFetched((prev) => [...prev, title]);
+        }
       } catch (err) {
-        setError('Failed to load filters. Please try again later.');
+        setErrors((prev) => ({ ...prev, [title]: 'Failed to load this filter group.' }));
       } finally {
-        setIsLoading(false);
+        setLoadingTitles((prev) => prev.filter((t) => t !== title));
       }
-    };
-    loadFilterData();
-  }, []);
-
-  const toggleAccordion = (title: string) => {
-    setExpanded((prev) => {
-      if (Array.isArray(prev)) {
-        return prev.includes(title) ? prev.filter((item) => item !== title) : [...prev, title];
-      }
-      return [title];
-    });
+    }
   };
 
   const handleCheckboxChange = (category: string, option: string) => {
@@ -47,16 +51,8 @@ const Filter: React.FC = () => {
       : [...updatedCategory, option];
 
     dispatch(setFilters({ [category]: updatedFilters }));
-    dispatch(fetchJobs()); // Trigger job fetch after filter update
+    dispatch(fetchJobs());
   };
-
-  if (error) {
-    return <div className="error">{error}</div>;
-  }
-
-  if (isLoading) {
-    return <div className="loading">Loading filters...</div>;
-  }
 
   return (
     <>
@@ -66,40 +62,43 @@ const Filter: React.FC = () => {
           {isFilterVisible ? 'Hide Filter' : 'Show Filter'}
         </button>
       </div>
+
       <div className={`filter-container ${isFilterVisible ? 'visible' : 'hidden'}`}>
-        {filterData.map((category) => (
-          <div key={category.title} className="filter-group">
-            <h4 onClick={() => toggleAccordion(category.title)} className="filter-header">
-              {category.title}
-              <span
-                className={`arrow ${
-                  Array.isArray(expanded) && expanded.includes(category.title) ? 'expanded' : ''
-                }`}
-              >
-                ▼
-              </span>
-            </h4>
-            <div
-              className={`filter-options ${
-                Array.isArray(expanded) && expanded.includes(category.title) ? 'show' : ''
-              }`}
-            >
-              {category.options.map((option) => (
-                <label key={option.label} className="filter-option">
-                  <input
-                    type="checkbox"
-                    checked={
-                      filters[category.key as keyof typeof filters]?.includes(option.label) || false
-                    }
-                    onChange={() => handleCheckboxChange(category.key, option.label)}
-                  />
-                  <span>{option.label}</span>
-                  <span className="count">({option.count})</span>
-                </label>
-              ))}
+        {titles.map((title) => {
+          const category = filterData.find((cat) => cat.title === title);
+          const isOpen = expanded.includes(title);
+          const isLoading = loadingTitles.includes(title);
+          const error = errors[title];
+
+          return (
+            <div key={title} className="filter-group">
+              <h4 onClick={() => toggleAccordion(title)} className="filter-header">
+                {title}
+                <span className={`arrow ${isOpen ? 'expanded' : ''}`}>▼</span>
+              </h4>
+
+              {isOpen && (
+                <div className="filter-options show">
+                  {isLoading && <div className="loading">Loading...</div>}
+                  {error && <div className="error">{error}</div>}
+                  {!isLoading && category?.options.map((option) => (
+                    <label key={option.label} className="filter-option">
+                      <input
+                        type="checkbox"
+                        checked={
+                          filters[category.key as keyof typeof filters]?.includes(option.label) || false
+                        }
+                        onChange={() => handleCheckboxChange(category.key, option.label)}
+                      />
+                      <span>{option.label}</span>
+                      <span className="count">({option.count})</span>
+                    </label>
+                  ))}
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </>
   );

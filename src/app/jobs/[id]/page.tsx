@@ -1,14 +1,18 @@
 // app/jobs/[id]/page.tsx
 import ViewDetails from '@/app/Components/Job/ViewDetails/ViewDetails'
+import { getJobById } from '@/lib/getJobById';
 
 interface Props {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 export default async function ViewDetailsPage({ params }: Props) {
-  const job = await getJobById(params.id); // Fetch from Firebase or your API
+  const { id } = await params;
+  const job = await getJobById(id);
+
+  if (!job) {
+    return <div>Job not found.</div>;
+  }
 
   return (
     <div>

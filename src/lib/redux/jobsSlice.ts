@@ -1,5 +1,5 @@
 // lib/redux/jobsSlice.ts
-import { fetchAllJobs, fetchFilteredJobs, fetchMatchingJobTitles, fetchMatchingLocations } from '@/app/services/jobsApi';
+import { fetchAllJobs, fetchMatchingJobTitles, fetchMatchingLocations } from '@/app/services/jobsApi';
 import { Job } from '@/app/types/job';
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 

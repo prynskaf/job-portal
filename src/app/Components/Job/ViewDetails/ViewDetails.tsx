@@ -27,7 +27,7 @@ const ViewDetails: React.FC<ViewDetailsProps> = ({ job }) => {
             <h1>{job.title}</h1>
             <p className="company-name">{job.company}</p>
             <button className="apply-button">
-              <Link href="/jobs/apply">Apply now</Link>
+            <Link href={`/jobs/apply?id=${job.id}`}>Apply now</Link>
             </button>
           </div>
         </div>
@@ -81,13 +81,61 @@ const ViewDetails: React.FC<ViewDetailsProps> = ({ job }) => {
         </section>
 
         <section>
-          <h2>Experience</h2>
-          <ul>
-            {job.experienceLevel && <li>{job.experienceLevel}</li>}
-          </ul>
-        </section>
+  <h2>Experience</h2>
+  <ul>
+    {job.experience && job.experience.length > 0 ? (
+      job.experience.map((item, idx) => <li key={idx}>{item}</li>)
+    ) : job.experienceLevel ? (
+      <li>{job.experienceLevel}</li>
+    ) : (
+      <li>Not specified</li>
+    )}
+  </ul>
+</section>
 
-        {/* Add more sections as needed, e.g. Soft Skills, Hiring Team, etc. */}
+<section>
+  <h2>Soft Skills</h2>
+  <ul>
+    {job.softSkills && job.softSkills.length > 0 ? (
+      job.softSkills.map((skill, idx) => <li key={idx}>{skill}</li>)
+    ) : (
+      <>
+        <li>Exceptional problem-solving and critical-thinking abilities</li>
+        <li>Excellent communication and teamwork skills</li>
+        <li>Adaptability in dynamic environments</li>
+      </>
+    )}
+  </ul>
+</section>
+
+<section>
+  <h2>Hiring Team Member</h2>
+  {job.hiringTeam?.name && job.hiringTeam?.position ? (
+    <p>{job.hiringTeam.name} – {job.hiringTeam.position}</p>
+  ) : (
+    <p>Not specified</p>
+  )}
+</section>
+
+<section>
+  <h2>Recruitment Coordinator</h2>
+  <ul>
+    {job.hiringTeam?.contact?.linkedin && (
+      <li>
+        <Link href={job.hiringTeam.contact.linkedin} target="_blank">LinkedIn</Link>
+      </li>
+    )}
+    {job.hiringTeam?.contact?.email && (
+      <li>
+        <a href={`mailto:${job.hiringTeam.contact.email}`}>Mail</a>
+      </li>
+    )}
+    {!job.hiringTeam?.contact?.linkedin && !job.hiringTeam?.contact?.email && (
+      <li>Not specified</li>
+    )}
+  </ul>
+</section>
+
       </div>
     </div>
   );

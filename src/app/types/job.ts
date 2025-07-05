@@ -1,4 +1,3 @@
-// types/job.ts
 export interface Job {
   id: string;
   title: string;
@@ -7,13 +6,26 @@ export interface Job {
   salaryMax: number;
   jobType: 'Full-Time' | 'Part-Time' | 'Internship' | 'Contract';
   workMode: 'On-Site' | 'Remote' | 'Hybrid';
-  function: string; // Marketing, Engineering, etc.
+  function: string;
   experienceLevel: 'Entry-Level' | 'Junior' | 'Mid-Level' | 'Senior' | 'Lead/Managerial' | 'Director/Executive';
   company: string;
   company_logo: string;
-  postedAt: string; // Updated to string
-  updatedAt: string; // Added as string
+  postedAt: string;
+  updatedAt: string;
+
   about: string;
   responsibilities: string[];
   technicalSkills: string[];
+  experience?: string[];
+  softSkills?: string[];
+
+  // ✅ Match Firebase structure
+  hiringTeam?: {
+    name: string;
+    position: string;
+    contact: {
+      email?: string;
+      linkedin?: string;
+    };
+  };
 }

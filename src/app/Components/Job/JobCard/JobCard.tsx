@@ -73,7 +73,7 @@ const JobCard: React.FC<JobCardProps> = ({
           <Link href={`/jobs/${id}`}>View details</Link>
         </button>
         <button className="applyNow">
-          <Link href={`/jobs/${id}/apply`}>Apply now</Link>
+        <Link href={`/jobs/apply?id=${id}`}>Apply now</Link>
         </button>
       </div>
     </div>

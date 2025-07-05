@@ -1,8 +1,12 @@
 "use client"
 import React, { useRef, useState } from 'react'
 import './ApplyJob.scss'
+import { Job } from '@/app/types/job';
 
-const ApplyJob = () => {
+interface ApplyJobProps {
+  job: Job;
+}
+const ApplyJob: React.FC<ApplyJobProps> = ({ job }) => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [fileName, setFileName] = useState('No file chosen')
 
@@ -18,7 +22,7 @@ const ApplyJob = () => {
     <div className="job-application-container">
       <div className="form-header">
         <h1>Job Application Forms</h1>
-        <p>Applying for Technical Support Specialist</p>
+        <p>Applying for <strong>{job.title}</strong></p>
       </div>
 
       <form className="application-form">
