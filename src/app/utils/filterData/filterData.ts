@@ -31,7 +31,7 @@ export const fetchFilterData = async (): Promise<FilterCategory[]> => {
     },
     {
       title: 'Job Functions',
-      key: 'jobFunction',
+      key: 'function',
       options: [
         { label: 'Marketing', count: 0 },
         { label: 'Engineering', count: 0 },

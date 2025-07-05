@@ -1,7 +1,8 @@
 'use client';
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
-import { setSearchQuery, setFilters, resetFilters } from '@/lib/redux/jobsSlice';
+import { setSearchQuery, setFilters, resetFilters, fetchJobs } from '@/lib/redux/jobsSlice';
+
 import './JobSearch.scss';
 import Filter from '../Filter/Filter';
 import JobListings from '../JobListings/JobListings';
@@ -10,7 +11,7 @@ import FindJobInput from '../FindJobInput/FindJobInput';
 
 const JobSearch = () => {
   const dispatch = useAppDispatch();
-  const { searchQuery, filters } = useAppSelector((state) => state.jobs);
+  const allJobs = useAppSelector((state) => state.jobs.allJobs); // 👈 Get total jobs
 
   const handleClear = () => {
     dispatch(resetFilters());
@@ -18,7 +19,11 @@ const JobSearch = () => {
   };
 
   const handleDropdownChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    dispatch(setFilters({ sortBy: e.target.value }));
+    const value = e.target.value;
+    if (value === 'newest' || value === 'oldest') {
+      dispatch(setFilters({ sortBy: value }));
+      dispatch(fetchJobs());
+    }
   };
 
   return (
@@ -35,7 +40,7 @@ const JobSearch = () => {
           <h2>Filter</h2>
           <div className='clear__btn'>
             <button onClick={handleClear}>clear</button>
-            <h2>All Jobs(100)</h2>
+            <h2>All Jobs ({allJobs.length})</h2> {/* ✅ Dynamic count */}
           </div>
           <Dropdown onChange={handleDropdownChange} />
         </div>

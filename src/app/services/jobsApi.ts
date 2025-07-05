@@ -43,7 +43,7 @@ export const fetchPaginatedJobs = async (
   filters: {
     jobType?: string[];
     workMode?: string[];
-    jobFunction?: string[];
+    function?: string[];
     experienceLevel?: string[];
     salaryMin?: number;
     salaryMax?: number;
@@ -70,8 +70,8 @@ export const fetchPaginatedJobs = async (
     if (filters.workMode?.length) {
       q = query(q, where('workMode', 'in', filters.workMode));
     }
-    if (filters.jobFunction?.length) {
-      q = query(q, where('function', 'in', filters.jobFunction));
+    if (filters.function?.length) {
+      q = query(q, where('function', 'in', filters.function));
     }
     if (filters.experienceLevel?.length) {
       q = query(q, where('experienceLevel', 'in', filters.experienceLevel));
