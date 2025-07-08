@@ -1,62 +1,48 @@
-// components/jobs/JobCard.tsx
 'use client';
 
-import { Bookmark, Users } from 'lucide-react';
+import { Users } from 'lucide-react';
 import Image from 'next/image';
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import Link from 'next/link';
 import './JobCard.scss';
+import BookmarkButton from '../../BookmarkButton/BookmarkButton';
+import { Job } from '@/app/types/job';
 
 interface JobCardProps {
-  id: string;
-  title: string;
-  type: string;
-  salary: string;
-  company: string;
-  location: string;
-  applicants: number;
-  logo: string;
+  job: Job;
+  onUnsave?: () => void;
 }
 
-const JobCard: React.FC<JobCardProps> = ({
-  id,
-  title,
-  type,
-  salary,
-  company,
-  location,
-  applicants,
-  logo,
-}) => {
+const JobCard: React.FC<JobCardProps> = ({ job, onUnsave }) => {
   return (
     <div className="card">
       <div className="grid first-grid">
         <div className="title-and-icon">
-          <h3 className="title">{title}</h3>
-          <Bookmark className="bookmark" />
+          <h3 className="title">{job.title}</h3>
+          <BookmarkButton job={job} onUnsave={onUnsave} />
         </div>
 
         <div className="type-and-salary">
-          <span className={`type ${type === 'Full-Time' ? 'fullTime' : 'partTime'}`}>
-            {type}
+          <span className={`type ${job.jobType === 'Full-Time' ? 'fullTime' : 'partTime'}`}>
+            {job.jobType}
           </span>
-          <p className="salary">{salary}</p>
+          <p className="salary">{`${job.salaryMin} - ${job.salaryMax}`}</p>
         </div>
       </div>
 
       <div className="grid second-grid">
         <Image 
-          src={logo || '/default-company.png'} 
-          alt={`${company} logo`} 
+          src={job.company_logo || '/default-company.png'} 
+          alt={`${job.company} logo`} 
           width={48} 
           height={48} 
           className="logo" 
         />
         <div className="company-and-location">
-          <p className="company">{company}</p>
+          <p className="company">{job.company}</p>
           <span className='flex gap-2'>
             <HiOutlineLocationMarker />
-            <p className="location">{location}</p>
+            <p className="location">{job.location}</p>
           </span>
         </div>
       </div>
@@ -64,16 +50,17 @@ const JobCard: React.FC<JobCardProps> = ({
       <div className="grid third-grid">
         <div className="applicants">
           <Users className="icon" />
-          <span>{applicants}+ applicants</span>
+          {/* You may need to add applicants count to your Job interface or get it elsewhere */}
+          <span>{/*job.applicants*/} applicants</span>
         </div>
       </div>
 
       <div className="grid fourth-grid actions">
         <button className="viewDetails">
-          <Link href={`/jobs/${id}`}>View details</Link>
+          <Link href={`/jobs/${job.id}`}>View details</Link>
         </button>
         <button className="applyNow">
-        <Link href={`/jobs/apply?id=${id}`}>Apply now</Link>
+          <Link href={`/jobs/apply?id=${job.id}`}>Apply now</Link>
         </button>
       </div>
     </div>

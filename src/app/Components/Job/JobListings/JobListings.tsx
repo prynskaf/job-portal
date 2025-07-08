@@ -46,16 +46,7 @@ const JobListings = () => {
         ) : (
           jobsToShow.map((job) => (
             <div className="job__card" key={job.id}>
-              <MemoizedJobCard 
-                title={job.title}
-                type={job.jobType}
-                salary={`$${job.salaryMin} - $${job.salaryMax}`}
-                company={job.company}
-                location={job.location}
-                applicants={0}
-                logo={job.company_logo}
-                id={job.id}
-              />
+            <MemoizedJobCard job={job} />
             </div>
           ))
         )}

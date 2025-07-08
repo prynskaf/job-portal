@@ -2,8 +2,8 @@ import React from 'react';
 import './ViewDetails.scss';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Bookmark } from 'lucide-react';
 import { Job } from '@/app/types/job';
+import BookmarkButton from '../../BookmarkButton/BookmarkButton';
 
 interface ViewDetailsProps {
   job: Job;
@@ -15,7 +15,7 @@ const ViewDetails: React.FC<ViewDetailsProps> = ({ job }) => {
       <div className="job-header">
         <div className="apply-section">
           <div className="bookmarkwrapper">
-            <Bookmark className="bookmark" />
+          <BookmarkButton job={job} jobId={job.id} />
           </div>
           <h2>Apply</h2>
           <p>Apply for your desired job matching your skills</p>

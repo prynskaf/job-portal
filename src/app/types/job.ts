@@ -12,6 +12,7 @@ export interface Job {
   company_logo: string;
   postedAt: string;
   updatedAt: string;
+  savedAt?: string;  
 
   about: string;
   responsibilities: string[];
