@@ -1,22 +1,34 @@
-// components/jobs/JobListings.tsx
+// // components/jobs/JobListings.tsx
 'use client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
-import { fetchInitialJobs } from '@/lib/redux/jobsSlice';
-
+import {
+  fetchInitialJobs,
+  fetchJobs,
+  setSearchQuery
+} from '@/lib/redux/jobsSlice';
+import { useSearchParams } from 'next/navigation';
 import './JobListings.scss';
 import JobCard from '../JobCard/JobCard';
 
 const JobListings = () => {
   const dispatch = useAppDispatch();
   const { filteredJobs, isLoading, error } = useAppSelector((state) => state.jobs);
-  const [visibleCount, setVisibleCount] = React.useState(9);
+  const [visibleCount, setVisibleCount] = useState(9);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    dispatch(fetchInitialJobs());
-  }, [dispatch]);
+    const jobTitle = searchParams.get('jobTitle') || '';
+    const location = searchParams.get('location') || '';
 
-  // Reset visibleCount when filteredJobs changes (e.g., new search/filter)
+    if (jobTitle || location) {
+      dispatch(setSearchQuery({ jobTitle, location }));
+      dispatch(fetchJobs());
+    } else {
+      dispatch(fetchInitialJobs());
+    }
+  }, [dispatch, searchParams]);
+
   useEffect(() => {
     setVisibleCount(9);
   }, [filteredJobs]);
@@ -26,13 +38,8 @@ const JobListings = () => {
 
   const MemoizedJobCard = React.memo(JobCard);
 
-  const handleLoadMore = () => {
-    setVisibleCount((prev) => prev + 9);
-  };
-
-  const handleShowFew = () => {
-    setVisibleCount(9);
-  };
+  const handleLoadMore = () => setVisibleCount((prev) => prev + 9);
+  const handleShowFew = () => setVisibleCount(9);
 
   const jobsToShow = filteredJobs.slice(0, visibleCount);
 
@@ -46,7 +53,7 @@ const JobListings = () => {
         ) : (
           jobsToShow.map((job) => (
             <div className="job__card" key={job.id}>
-            <MemoizedJobCard job={job} />
+              <MemoizedJobCard job={job} />
             </div>
           ))
         )}
