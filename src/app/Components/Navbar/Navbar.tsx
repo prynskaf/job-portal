@@ -34,12 +34,22 @@ const Navbar = () => {
           }
         } catch (error) {
           console.error('Error fetching user profile:', error);
-          // Optionally set a default profile picture here
           setProfilePic('/profilePic/profilePic.png');
         }
       }
     });
-    return () => unsubscribe();
+
+    // Listen for profilePicChanged event
+    const handleProfilePicChanged = (e: Event) => {
+      const customEvent = e as CustomEvent<string>;
+      setProfilePic(customEvent.detail);
+    };
+    window.addEventListener('profilePicChanged', handleProfilePicChanged);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener('profilePicChanged', handleProfilePicChanged);
+    };
   }, []);
   const toggleMenu = () => {
     setIsOpen(!isOpen);

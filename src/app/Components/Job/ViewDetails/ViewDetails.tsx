@@ -1,21 +1,34 @@
+"use client";
 import React from 'react';
 import './ViewDetails.scss';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Job } from '@/app/types/job';
 import BookmarkButton from '../../BookmarkButton/BookmarkButton';
+import { ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+
+
+
 
 interface ViewDetailsProps {
   job: Job;
 }
 
 const ViewDetails: React.FC<ViewDetailsProps> = ({ job }) => {
+  const router = useRouter();
   return (
-    <div className="view-details">
-      <div className="job-header">
-        <div className="apply-section">
+      <div className="view-details">
+      {/* back button */}
+       <div className="back-button">
+          <button onClick={() => router.back()} className="back-link">
+            <ArrowLeft className="icon" size="30" /> Back to Jobs
+          </button>
+        </div>
+        <div className="job-header">
+          <div className="apply-section">
           <div className="bookmarkwrapper">
-          <BookmarkButton job={job} jobId={job.id} />
+          <BookmarkButton job={job} />
           </div>
           <h2>Apply</h2>
           <p>Apply for your desired job matching your skills</p>
@@ -38,7 +51,7 @@ const ViewDetails: React.FC<ViewDetailsProps> = ({ job }) => {
             <p>${job.salaryMin} to ${job.salaryMax} yearly</p>
           </div>
           <div className="info-item">
-            <h3>Job Posted</h3>
+            <h3>JOB POSTED</h3>
             <p>{job.postedAt ? new Date(job.postedAt).toLocaleDateString() : '-'}</p>
           </div>
           <div className="info-item">

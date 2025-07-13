@@ -12,26 +12,29 @@ const ContactForms = () => {
         message: ''
     });
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Add form submission logic here
-        console.log('Form submitted:', formData);
-    };
+const handleChange = (
+  e: React.ChangeEvent<
+    HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+  >
+) => {
+  const { name, value } = e.target;
+  setFormData(prevState => ({
+    ...prevState,
+    [name]: value
+  }));
+};
+const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  // Add form submission logic here
+  console.log('Form submitted:', formData);
+};
 
     return (
         <div className='contactForms'>
             <div className="contactForms__wrapper">
                 <div className="header">
                     <h2>Get in <span>touch</span></h2>
-                    <p>Have questions? We're ready to help!</p>
+                    <p>Have questions? We&lsquo;re ready to help!</p>
                 </div>
 
                 <div className="forms-section">

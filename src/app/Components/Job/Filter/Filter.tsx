@@ -26,7 +26,7 @@ const Filter: React.FC = () => {
       isOpen ? prev.filter((item) => item !== title) : [...prev, title]
     );
 
-    if (!fetched.includes(title)) {
+    if (!fetched.includes(title) && !loadingTitles.includes(title)) {
       setLoadingTitles((prev) => [...prev, title]);
 
       try {
@@ -36,7 +36,7 @@ const Filter: React.FC = () => {
           setFilterData((prev) => [...prev, category]);
           setFetched((prev) => [...prev, title]);
         }
-      } catch (err) {
+      } catch {
         setErrors((prev) => ({ ...prev, [title]: 'Failed to load this filter group.' }));
       } finally {
         setLoadingTitles((prev) => prev.filter((t) => t !== title));
@@ -45,10 +45,17 @@ const Filter: React.FC = () => {
   };
 
   const handleCheckboxChange = (category: string, option: string) => {
-    const updatedCategory = filters[category as keyof typeof filters] || [];
-    const updatedFilters = updatedCategory.includes(option)
-      ? updatedCategory.filter((item) => item !== option)
-      : [...updatedCategory, option];
+    const filterValue = filters[category as keyof typeof filters];
+
+    let updatedFilters: string[] = [];
+
+    if (Array.isArray(filterValue)) {
+      updatedFilters = filterValue.includes(option)
+        ? filterValue.filter((item) => item !== option)
+        : [...filterValue, option];
+    } else {
+      updatedFilters = [option];
+    }
 
     dispatch(setFilters({ [category]: updatedFilters }));
     dispatch(fetchJobs());
@@ -81,19 +88,22 @@ const Filter: React.FC = () => {
                 <div className="filter-options show">
                   {isLoading && <div className="loading">Loading...</div>}
                   {error && <div className="error">{error}</div>}
-                  {!isLoading && category?.options.map((option) => (
-                    <label key={option.label} className="filter-option">
-                      <input
-                        type="checkbox"
-                        checked={
-                          filters[category.key as keyof typeof filters]?.includes(option.label) || false
-                        }
-                        onChange={() => handleCheckboxChange(category.key, option.label)}
-                      />
-                      <span>{option.label}</span>
-                      <span className="count">({option.count})</span>
-                    </label>
-                  ))}
+                  {!isLoading && category?.options.map((option) => {
+                    const filterValue = filters[category.key as keyof typeof filters];
+                    const isChecked = Array.isArray(filterValue) && filterValue.includes(option.label);
+
+                    return (
+                      <label key={option.label} className="filter-option">
+                        <input
+                          type="checkbox"
+                          checked={isChecked || false}
+                          onChange={() => handleCheckboxChange(category.key, option.label)}
+                        />
+                        <span>{option.label}</span>
+                        <span className="count">({option.count})</span>
+                      </label>
+                    );
+                  })}
                 </div>
               )}
             </div>

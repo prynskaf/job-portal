@@ -10,13 +10,15 @@ import './FindJobInput.scss';
 
 const FindJobInput: React.FC = () => {
     const dispatch = useAppDispatch();
-    const { titleSuggestions, locationSuggestions, searchQuery, isLoading } = useAppSelector(state => state.jobs);
+    const { titleSuggestions, locationSuggestions, searchQuery } = useAppSelector(state => state.jobs);
 
     const [jobQuery, setJobQuery] = useState(searchQuery.jobTitle);
     const [locationQuery, setLocationQuery] = useState(searchQuery.location);
     const [showJobSuggestions, setShowJobSuggestions] = useState(false);
     const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
     const inputRef = useRef<HTMLDivElement | null>(null);
+    const [isSearching, setIsSearching] = useState(false);
+
 
     const router = useRouter();
     const pathname = usePathname();
@@ -89,14 +91,20 @@ const FindJobInput: React.FC = () => {
     };
 
     // Accurate search: update Redux state, then fetch jobs
-    const handleSearch = () => {
+    const handleSearch = async () => {
         if (!jobQuery && !locationQuery) return;
+
+        setIsSearching(true); // start local loading
+
         dispatch(setSearchQuery({ jobTitle: jobQuery, location: locationQuery }));
-        dispatch(fetchJobs());
+        await dispatch(fetchJobs()); // wait for the jobs to be fetched
+
         const queryParams = new URLSearchParams();
         if (jobQuery) queryParams.append('jobTitle', jobQuery);
         if (locationQuery) queryParams.append('location', locationQuery);
+
         router.push(`/jobs?${queryParams.toString()}`);
+        setIsSearching(false); // stop loading after navigation
     };
 
     return (
@@ -122,9 +130,10 @@ const FindJobInput: React.FC = () => {
                         onFocus={() => handleInputFocus('location')}
                     />
                 </label>
-                <button onClick={handleSearch} disabled={isLoading}>
-                    {isLoading ? 'Loading...' : 'Search'}
+                <button onClick={handleSearch} disabled={isSearching}>
+                    {isSearching ? 'Searching...' : 'Search'}
                 </button>
+
             </div>
             {(showJobSuggestions || showLocationSuggestions) && (
                 <div className="suggestions__container">
@@ -174,4 +183,4 @@ const FindJobInput: React.FC = () => {
 };
 
 export default FindJobInput;
-                                  
+

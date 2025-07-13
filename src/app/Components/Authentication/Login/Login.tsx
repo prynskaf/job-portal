@@ -11,6 +11,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -55,12 +56,18 @@ const Login = () => {
               <label>Password</label>
               <div className="password-input">
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="Enter password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <span className="show-password">Show</span>
+                <span
+                  className="show-password"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setShowPassword((prev) => !prev)}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </span>
               </div>
 
               <div className="login__options">
@@ -89,7 +96,7 @@ const Login = () => {
             </div>
 
             <p className="register-link">
-              Don't have an account? <Link href="/signup">Register</Link>
+              Don&#39;t have an account? <Link href="/signup">Register</Link>
             </p>
           </div>
 

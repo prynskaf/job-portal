@@ -2,7 +2,6 @@ import { Job } from "@/app/types/job";
 import { db } from "@/lib/firebaseConfig";
 import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 
-
 export const toggleSavedJob = async (
   userId: string,
   job: Job & { jobId: string }
@@ -13,7 +12,11 @@ export const toggleSavedJob = async (
   if (!userSnap.exists()) return false;
 
   const userData = userSnap.data();
-  const alreadySaved = (userData.savedJobs || []).some((j: any) => j.jobId === job.jobId);
+
+  // Assert savedJobs type explicitly
+  const savedJobs = (userData.savedJobs || []) as (Job & { jobId: string })[];
+
+  const alreadySaved = savedJobs.some((j) => j.jobId === job.jobId);
 
   await updateDoc(userRef, {
     savedJobs: alreadySaved

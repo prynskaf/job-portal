@@ -1,5 +1,5 @@
 // services/jobsApi.ts
-import { collection, query, where, getDocs, orderBy, startAfter, limit } from 'firebase/firestore';
+import { collection, query, where, getDocs, orderBy, startAfter, limit, DocumentSnapshot, DocumentData } from 'firebase/firestore';
 import { Job } from '../types/job';
 import { db } from '@/lib/firebaseConfig';
 
@@ -49,9 +49,9 @@ export const fetchPaginatedJobs = async (
     salaryMax?: number;
     sortBy?: 'newest' | 'oldest';
   },
-  lastDoc: any, // Firestore document snapshot for pagination
+  lastDoc: DocumentSnapshot<DocumentData> | null, // Firestore document snapshot for pagination
   limitCount: number = 10 // Number of jobs per page
-): Promise<{ jobs: Job[]; lastVisible: any }> => {
+): Promise<{ jobs: Job[]; lastVisible: DocumentSnapshot<DocumentData> | null }> => {
   try {
     let q = query(collection(db, 'jobs'));
 

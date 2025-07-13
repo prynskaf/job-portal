@@ -13,6 +13,7 @@ export interface Job {
   postedAt: string;
   updatedAt: string;
   savedAt?: string;  
+  applicantsCount?: number;
 
   about: string;
   responsibilities: string[];

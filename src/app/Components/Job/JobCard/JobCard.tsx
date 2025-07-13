@@ -51,7 +51,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, onUnsave }) => {
         <div className="applicants">
           <Users className="icon" />
           {/* You may need to add applicants count to your Job interface or get it elsewhere */}
-          <span>{/*job.applicants*/} applicants</span>
+         <span>{job.applicantsCount ?? 0} applicants</span>
         </div>
       </div>
 

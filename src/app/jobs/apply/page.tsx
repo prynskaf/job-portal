@@ -3,7 +3,7 @@ import { getJobById } from '@/lib/getJobById';
 import { Job } from '@/app/types/job';
 
 interface Props {
-  searchParams: { id: string };
+  searchParams: Promise<{ id: string }>;
 }
 
 export default async function ApplyPage({ searchParams }: Props) {

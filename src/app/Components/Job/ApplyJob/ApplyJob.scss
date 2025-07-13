@@ -11,6 +11,34 @@
     text-align: center;
     margin-bottom: 2rem;
     border: 1px solid #E5E7EB;
+
+    .back-button {
+     display: flex;
+     justify-content: flex-start;
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: transparent;
+    color: #6b46c1;
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+
+    .icon {
+      width: 1.1rem;
+      height: 1.1rem;
+    }
+
+    &:hover {
+      background-color: #f3e8ff;
+    }
+  }
+}
   
     h1 {
       margin-bottom: 0.5rem;

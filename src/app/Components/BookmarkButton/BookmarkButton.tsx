@@ -13,6 +13,7 @@ import {
   updateDoc,
   setDoc
 } from 'firebase/firestore';
+import { toast } from 'sonner';  
 
 interface BookmarkButtonProps {
   job: Job;
@@ -58,53 +59,59 @@ const BookmarkButton: React.FC<BookmarkButtonProps> = ({
     return () => unsubscribe();
   }, [jobId]);
 
-  const handleClick = async () => {
-    if (isLoading) return;
+const handleClick = async () => {
+  if (isLoading) return;
 
-    if (!user) {
-      router.push('/signup');
-      return;
+  if (!user) {
+    router.push('/login');
+    return;
+  }
+
+  setIsLoading(true);
+
+  // Save the current saved state before optimistic update
+  const wasSaved = isSaved;
+
+  // Optimistic UI update
+  setIsSaved(!wasSaved);
+  if (wasSaved && onUnsave) onUnsave();
+
+  const userDocRef = doc(db, 'users', user.uid);
+
+  // Show loading toast
+  const loadingToastId = toast.loading(wasSaved ? 'Removing...' : 'Saving...');
+
+  try {
+    const userDocSnap = await getDoc(userDocRef);
+    let savedJobs: Job[] = [];
+    if (userDocSnap.exists()) {
+      savedJobs = userDocSnap.data().savedJobs || [];
     }
 
-    setIsLoading(true);
-
-    // Optimistically update UI
-    if (isSaved) {
-      setIsSaved(false);
-      if (onUnsave) onUnsave();
+    if (wasSaved) {
+      // Remove job
+      const updatedJobs = savedJobs.filter((j: Job) => j.id !== jobId);
+      await updateDoc(userDocRef, { savedJobs: updatedJobs });
+      toast.success('Removed from saved jobs', { id: loadingToastId });
     } else {
-      setIsSaved(true);
+      // Add job
+      const updatedJobs = [...savedJobs, { ...job }];
+      await updateDoc(userDocRef, { savedJobs: updatedJobs }).catch(async () => {
+        // If doc doesn't exist, create it
+        await setDoc(userDocRef, { savedJobs: updatedJobs });
+      });
+      toast.success('Saved successfully!', { id: loadingToastId });
     }
+  } catch (error) {
+    // Rollback optimistic update
+    setIsSaved(wasSaved);
+    console.error('Error toggling saved job:', error);
+    toast.error('Failed to update saved jobs.', { id: loadingToastId });
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-    const userDocRef = doc(db, 'users', user.uid);
-
-    try {
-      const userDocSnap = await getDoc(userDocRef);
-      let savedJobs: Job[] = [];
-      if (userDocSnap.exists()) {
-        savedJobs = userDocSnap.data().savedJobs || [];
-      }
-
-      if (isSaved) {
-        // Remove job from savedJobs array
-        const updatedJobs = savedJobs.filter((j: Job) => j.id !== jobId);
-        await updateDoc(userDocRef, { savedJobs: updatedJobs });
-      } else {
-        // Add job to savedJobs array
-        const updatedJobs = [...savedJobs, { ...job }];
-        await updateDoc(userDocRef, { savedJobs: updatedJobs }).catch(async (err) => {
-          // If doc doesn't exist, create it
-          await setDoc(userDocRef, { savedJobs: updatedJobs });
-        });
-      }
-    } catch (error) {
-      // Rollback optimistic update if error
-      setIsSaved(isSaved);
-      console.error('Error toggling saved job:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <button
