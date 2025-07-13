@@ -1,16 +1,15 @@
-import React from 'react'
-import './Dropdown.scss'
+import React from 'react';
+import './Dropdown.scss';
 
-const Dropdown = () => {
+const Dropdown = ({ onChange }: { onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void }) => {
   return (
     <div>
-      <select>
-        <option value="option1">Option 1</option>
-        <option value="option2">Option 2</option>
-        <option value="option3">Option 3</option>
+      <select onChange={onChange}>
+        <option value="newest">Newest</option>
+        <option value="oldest">Oldest</option>
       </select>
     </div>
-  )
-}
+  );
+};
 
-export default Dropdown
+export default Dropdown;

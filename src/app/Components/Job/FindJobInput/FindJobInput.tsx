@@ -1,87 +1,111 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
+import { fetchJobTitleSuggestions, fetchLocationSuggestions, setSearchQuery, fetchJobs } from '@/lib/redux/jobsSlice';
+import { debounce } from 'lodash';
 import { CiSearch } from 'react-icons/ci';
 import { IoLocationOutline } from 'react-icons/io5';
-import { usePathname } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import './FindJobInput.scss';
 
-interface Suggestion {
-    id: number;
-    title: string;
-}
-
-const fakeJobSuggestions: Suggestion[] = [
-    { id: 1, title: 'Frontend Developer' },
-    { id: 2, title: 'Backend Developer' },
-    { id: 3, title: 'Full Stack Engineer' },
-    { id: 4, title: 'UI/UX Designer' },
-    { id: 5, title: 'Product Manager' },
-    { id: 6, title: 'Data Scientist' },
-    { id: 7, title: 'Digital Marketing Specialist' }
-];
-
-const fakeCountries: Suggestion[] = [
-    { id: 1, title: 'United States' },
-    { id: 2, title: 'United Kingdom' },
-    { id: 3, title: 'Canada' },
-    { id: 4, title: 'Germany' },
-    { id: 5, title: 'Netherlands' },
-    { id: 6, title: 'Belgium' },
-    { id: 7, title: 'Australia' },
-    { id: 8, title: 'India' }
-];
-
 const FindJobInput: React.FC = () => {
-    const pathname = usePathname();
-    const isHome = pathname === '/';
+    const dispatch = useAppDispatch();
+    const { titleSuggestions, locationSuggestions, searchQuery } = useAppSelector(state => state.jobs);
 
-    const [jobQuery, setJobQuery] = useState<string>('');
-    const [locationQuery, setLocationQuery] = useState<string>('');
-    const [jobSuggestions, setJobSuggestions] = useState<Suggestion[]>([]);
-    const [countrySuggestions, setCountrySuggestions] = useState<Suggestion[]>([]);
-    const [showJobSuggestions, setShowJobSuggestions] = useState<boolean>(false);
-    const [showCountrySuggestions, setShowCountrySuggestions] = useState<boolean>(false);
+    const [jobQuery, setJobQuery] = useState(searchQuery.jobTitle);
+    const [locationQuery, setLocationQuery] = useState(searchQuery.location);
+    const [showJobSuggestions, setShowJobSuggestions] = useState(false);
+    const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
     const inputRef = useRef<HTMLDivElement | null>(null);
+    const [isSearching, setIsSearching] = useState(false);
 
-    useEffect(() => {
-        if (jobQuery.length > 1) {
-            const filteredSuggestions = fakeJobSuggestions.filter((suggestion) =>
-                suggestion.title.toLowerCase().includes(jobQuery.toLowerCase())
-            );
-            setJobSuggestions(filteredSuggestions);
-            setShowJobSuggestions(true);
-        } else {
-            setJobSuggestions([]);
-            setShowJobSuggestions(false);
-        }
-    }, [jobQuery]);
 
-    useEffect(() => {
-        if (locationQuery.length > 1) {
-            const filteredCountries = fakeCountries.filter((country) =>
-                country.title.toLowerCase().includes(locationQuery.toLowerCase())
-            );
-            setCountrySuggestions(filteredCountries);
-            setShowCountrySuggestions(true);
-        } else {
-            setCountrySuggestions([]);
-            setShowCountrySuggestions(false);
-        }
-    }, [locationQuery]);
+    const router = useRouter();
+    const pathname = usePathname();
+
+    // Debounced fetch for suggestions only
+    const fetchJobSuggestionsDebounced = debounce((query: string) => {
+        dispatch(fetchJobTitleSuggestions(query));
+    }, 200);
+
+    const fetchLocationSuggestionsDebounced = debounce((query: string) => {
+        dispatch(fetchLocationSuggestions(query));
+    }, 200);
+
+    // Handle job input change (instant update, debounce fetch)
+    const handleJobQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setJobQuery(value);
+        setShowJobSuggestions(value.length > 0);
+        fetchJobSuggestionsDebounced(value);
+    };
+
+    // Handle location input change (instant update, debounce fetch)
+    const handleLocationQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setLocationQuery(value);
+        setShowLocationSuggestions(value.length > 0);
+        fetchLocationSuggestionsDebounced(value);
+    };
+
+    const handleInputFocus = (field: 'job' | 'location') => {
+        if (field === 'job') setShowJobSuggestions(true);
+        if (field === 'location') setShowLocationSuggestions(true);
+    };
+
+    const clearSuggestions = () => {
+        setShowJobSuggestions(false);
+        setShowLocationSuggestions(false);
+    };
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (inputRef.current && !inputRef.current.contains(event.target as Node)) {
-                setShowJobSuggestions(false);
-                setShowCountrySuggestions(false);
+                clearSuggestions();
             }
         };
-
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
+    // Keep Redux state in sync with local state for query params
+    useEffect(() => {
+        dispatch(setSearchQuery({ jobTitle: jobQuery, location: locationQuery }));
+        const queryParams = new URLSearchParams();
+        if (jobQuery) queryParams.append('jobTitle', jobQuery);
+        if (locationQuery) queryParams.append('location', locationQuery);
+        router.replace(`${pathname}?${queryParams.toString()}`);
+    }, [jobQuery, locationQuery, dispatch, pathname, router]);
+
+    const handleSuggestionClick = (value: string, type: 'job' | 'location') => {
+        if (type === 'job') {
+            setJobQuery(value);
+            setShowJobSuggestions(false);
+        } else {
+            setLocationQuery(value);
+            setShowLocationSuggestions(false);
+        }
+        clearSuggestions();
+    };
+
+    // Accurate search: update Redux state, then fetch jobs
+    const handleSearch = async () => {
+        if (!jobQuery && !locationQuery) return;
+
+        setIsSearching(true); // start local loading
+
+        dispatch(setSearchQuery({ jobTitle: jobQuery, location: locationQuery }));
+        await dispatch(fetchJobs()); // wait for the jobs to be fetched
+
+        const queryParams = new URLSearchParams();
+        if (jobQuery) queryParams.append('jobTitle', jobQuery);
+        if (locationQuery) queryParams.append('location', locationQuery);
+
+        router.push(`/jobs?${queryParams.toString()}`);
+        setIsSearching(false); // stop loading after navigation
+    };
 
     return (
         <div className='find__job__container' ref={inputRef}>
@@ -92,8 +116,8 @@ const FindJobInput: React.FC = () => {
                         type="search"
                         placeholder="Job title, Keyword..."
                         value={jobQuery}
-                        onChange={(e) => setJobQuery(e.target.value)}
-                        onFocus={() => setShowJobSuggestions(true)}
+                        onChange={handleJobQueryChange}
+                        onFocus={() => handleInputFocus('job')}
                     />
                 </label>
                 <label className='hide__on__mobile'>
@@ -102,46 +126,57 @@ const FindJobInput: React.FC = () => {
                         type="search"
                         placeholder="Location"
                         value={locationQuery}
-                        onChange={(e) => setLocationQuery(e.target.value)}
-                        onFocus={() => setShowCountrySuggestions(true)}
+                        onChange={handleLocationQueryChange}
+                        onFocus={() => handleInputFocus('location')}
                     />
                 </label>
-                <button>{isHome ? 'Find Job' : 'Search'}</button>
-            </div>
+                <button onClick={handleSearch} disabled={isSearching}>
+                    {isSearching ? 'Searching...' : 'Search'}
+                </button>
 
-            {(showJobSuggestions || showCountrySuggestions) && (
+            </div>
+            {(showJobSuggestions || showLocationSuggestions) && (
                 <div className="suggestions__container">
-                    {showJobSuggestions && jobSuggestions.length > 0 && (
+                    {showJobSuggestions && (
                         <div className="job__suggestions">
-                            {jobSuggestions.map((suggestion) => (
-                                <div key={suggestion.id} className="suggestion-item" onClick={() => {
-                                    setJobQuery(suggestion.title);
-                                    setShowJobSuggestions(false);
-                                }}>
-                                    {suggestion.title}
-                                </div>
-                            ))}
+                            {titleSuggestions.length > 0 ? (
+                                titleSuggestions.map((suggestion, index) => (
+                                    <div
+                                        key={index}
+                                        className="suggestion-item"
+                                        onClick={() => handleSuggestionClick(suggestion, 'job')}
+                                    >
+                                        {suggestion}
+                                    </div>
+                                ))
+                            ) : (
+                                <p>No job titles found</p>
+                            )}
                         </div>
                     )}
-
-                    {showCountrySuggestions && countrySuggestions.length > 0 && (
+                    {showLocationSuggestions && (
                         <div className="location__suggestions">
-                            {countrySuggestions.map((country) => (
-                                <div key={country.id} className="suggestion-item" onClick={() => {
-                                    setLocationQuery(country.title);
-                                    setShowCountrySuggestions(false);
-                                }}>
-                                    {country.title}
-                                </div>
-                            ))}
+                            {locationSuggestions.length > 0 ? (
+                                locationSuggestions.map((suggestion, index) => (
+                                    <div
+                                        key={index}
+                                        className="suggestion-item"
+                                        onClick={() => handleSuggestionClick(suggestion, 'location')}
+                                    >
+                                        {suggestion}
+                                    </div>
+                                ))
+                            ) : (
+                                <p>No locations found</p>
+                            )}
                         </div>
                     )}
                 </div>
             )}
-            {(!showJobSuggestions && !showCountrySuggestions) && (
-                 <p>
-                 Suggestion: UI/UX Designer, Programming, <span>Digital Marketing</span>, Video, Animation.
-             </p>
+            {(!showJobSuggestions && !showLocationSuggestions) && (
+                <p>
+                    Suggestion: UI/UX Designer, Programming, <span>Digital Marketing</span>, Video, Animation.
+                </p>
             )}
         </div>
     );

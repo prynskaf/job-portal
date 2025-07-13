@@ -1,14 +1,16 @@
-import React from 'react'
-import JobSearch from '../Components/Job/JobSearch/JobSearch'
+'use client';
 
+import React, { Suspense } from 'react';
+import JobSearch from '../Components/Job/JobSearch/JobSearch';
 
-
-const Jobs = () => {
+export default function Jobs() {
   return (
-    <div>
-     <JobSearch />
-    </div>
-  )
+    <Suspense fallback={<div>Loading jobs...</div>}>
+      <JobSearch />
+    </Suspense>
+  );
 }
 
-export default Jobs
+
+
+
