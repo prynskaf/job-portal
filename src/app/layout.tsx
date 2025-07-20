@@ -9,6 +9,7 @@ import ReduxProvider from "./Components/Providers/ReduxProvider";
 export const metadata: Metadata = {
   title: "Always Apply",
   description: "Find your dream job",
+  
 };
 
 export default function RootLayout({
@@ -18,6 +19,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/logo/logoIcon.svg" />
+      </head>
       <body>
       
         <main className="">
