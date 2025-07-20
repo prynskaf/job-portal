@@ -9,6 +9,9 @@ import ReduxProvider from "./Components/Providers/ReduxProvider";
 export const metadata: Metadata = {
   title: "Always Apply",
   description: "Find your dream job",
+   icons: {
+    icon: "/logo/logoIcon.svg"
+  }
   
 };
 
@@ -19,9 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <link rel="icon" href="/logo/logoIcon.svg" />
-      </head>
+
       <body>
       
         <main className="">
